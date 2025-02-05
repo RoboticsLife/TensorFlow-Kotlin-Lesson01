@@ -26,7 +26,9 @@
 
 
 
-    <!-- Add those Plugins to pom.xml -->
+###### Plugins section
+
+  <!-- Add those Plugins to pom.xml -->
 
             <!--
             https://maven.apache.org/plugins/maven-compiler-plugin/
