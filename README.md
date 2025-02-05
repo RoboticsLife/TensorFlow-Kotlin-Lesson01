@@ -8,6 +8,8 @@
 
 #### Step 1: maven pom.xml settings
 
+###### Properties section
+
  <properties>
         <main.class>org.example.runtime.MainKt</main.class>   <!-- Lesson01 :: add to pom.xml -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -88,6 +90,47 @@
                     </execution>
                 </executions>
             </plugin>
+
+
+###### Dependencies section
+
+    <!-- Add those Dependencies to pom.xml -->
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <!-- include Pi4J Core -->
+        <dependency>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-core</artifactId>
+            <version>${pi4j.version}</version>
+        </dependency>
+
+        <!-- include Pi4J Plugins (Platforms and I/O Providers) -->
+        <dependency>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-plugin-raspberrypi</artifactId>
+            <version>${pi4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-plugin-gpiod</artifactId>
+            <version>${pi4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core</artifactId>
+            <version>1.10.1</version>
+        </dependency>
 
 
 #### Step 2: remote compiling / debugging setup
