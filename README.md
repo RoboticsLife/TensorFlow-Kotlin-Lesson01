@@ -138,9 +138,11 @@
 #### Step 2: remote compiling / debugging setup
 
 
-
+Add new launch configuration to IntelliJ IDEA
 
 ![screenshot](readme/readme01.png)
 
+
+fill IP / port adress to Raspberry PI. Username & password as sudo connection. Add Main Kotlin class and project module.
 
 ![screenshot](readme/readme02.png)
