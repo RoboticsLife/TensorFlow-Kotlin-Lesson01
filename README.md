@@ -6,7 +6,7 @@
 
 ###### This is a h6 header
 
-[Click Me to Go to GitHub](http://github.com)
+[All tutorails and videos on my YouTube channel](https://www.youtube.com/@OleksandrNeiko)
 
 
 ![screenshot](readme/readme01.png)
