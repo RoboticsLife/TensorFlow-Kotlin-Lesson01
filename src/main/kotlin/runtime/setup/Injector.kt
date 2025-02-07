@@ -9,4 +9,6 @@ object Injector {
     fun getPi4jConsole() = Console()
 
     fun getPi4j(): Context = Pi4J.newAutoContext()
+
+    fun getRuntimeConfiguration(): RuntimeConfigurationWorker = RuntimeConfigurationWorkerImpl()
 }
