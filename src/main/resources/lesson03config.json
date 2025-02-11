@@ -2,7 +2,7 @@
   "configName": "lesson03-two-leds",
   "configDescription": "This is a simple configuration with 2 leds",
   "configVersion": "1.0.0",
-  "hardwareType": "circuit",
+  "hardwareType": "circuitboard",
   "hardwareModel": "leds",
   "hardwareTypeCode": 1,
   "hardwareModelCode": 1,

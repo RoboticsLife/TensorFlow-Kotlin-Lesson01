@@ -11,16 +11,16 @@ data class Configuration(
     val hardwareModelCode: Int? = null,
     val hardwareType: String? = null,
     val hardwareTypeCode: Int? = null,
-    val leds: List<Led?>? = null,
-    val buttons: List<Button?>? = null,
+    val leds: List<LedConfig?>? = null,
+    val buttons: List<ButtonConfig?>? = null,
 ) {
-    data class Button(
+    data class ButtonConfig(
         val name: String?,
         val pin: Int?,
         val pullResistance: Int?
     )
 
-    data class Led(
+    data class LedConfig(
         val name: String?,
         val pin: Int?
     )

@@ -5,7 +5,7 @@
 
 
 
-## Lesson 03: Hardware configs parsing, Hot Plugging presets
+## Lesson 04: Hardware structure builder. Json config parsing.
 
 
 #### Step 1: maven pom.xml settings
