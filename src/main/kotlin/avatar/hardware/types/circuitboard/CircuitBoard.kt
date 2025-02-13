@@ -12,4 +12,6 @@ interface CircuitBoard: Body {
 
     fun ledOff(ledPosition: Int = 0): Boolean
 
+    fun addButtonListeners(buttonPosition: Int = 0, actionHigh: () -> Unit, actionLow: () -> Unit): Boolean
+
 }

@@ -67,6 +67,16 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
         return false
     }
 
+    override fun addButtonListeners(buttonPosition: Int, actionHigh: () -> Unit, actionLow: () -> Unit): Boolean {
+        if (buttonPosition < 0) return false
+
+        if (buttonPosition < body.buttons.size) {
+            body.buttons[buttonPosition].addButtonListeners(actionHigh, actionLow)
+            return true
+        }
+        return false
+    }
+
     override fun getBatteryStatus(): Int {
         return 0
     }

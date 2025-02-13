@@ -20,7 +20,7 @@
     {
       "name": "ControlButton",
       "pin": 21,
-      "pullResistance": 1
+      "pullResistance": 0
     }
   ]
 }

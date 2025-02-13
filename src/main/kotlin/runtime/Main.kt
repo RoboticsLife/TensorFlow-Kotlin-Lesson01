@@ -34,17 +34,29 @@ suspend fun main() {
     println(configuration)
 
     if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
-        println("led on")
-        (avatar.body as CircuitBoard).ledOn(0, 5000L)
-        delay(7000)
-        (avatar.body as CircuitBoard).ledOn(0)
-        (avatar.body as CircuitBoard).ledOn(1)
+        var counter = 0
+
+        (avatar.body as CircuitBoard).addButtonListeners(
+            buttonPosition = 0,
+            actionHigh = {
+                counter++
+                (avatar.body as CircuitBoard).ledOn(0)
+            },
+            actionLow =  {
+                (avatar.body as CircuitBoard).ledOff(0)
+                if (counter > 4) {
+                    (avatar.body as CircuitBoard).ledOn(1, 5000L)
+                    counter = 0
+                }
+            }
+        )
+
     }
 
     //add infinite loop for java app running
     coroutineScope {
         println("Start infinite main thread")
-        delay(100_000_000L)
+        delay(Long.MAX_VALUE)
         println("End infinite main thread")
     }
 }
