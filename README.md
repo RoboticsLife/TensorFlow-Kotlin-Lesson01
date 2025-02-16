@@ -5,7 +5,7 @@
 
 
 
-## LESSON 05: Work with button. Button listeners.
+## LESSON 06: Network connection. Weather output after button pressing
 
 
 #### Step 1: Add logic to Button class

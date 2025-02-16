@@ -15,7 +15,7 @@ import kotlin.math.abs
 
 
 /**
- * LESSON 05: Work with button. Button listeners.
+ * LESSON 06: Network connection. Weather output after button pressing
  * GPIO-Kotlin-Pi4j project.
  * Kotlin Gpio project. Working with IO lines on Raspberry Pi using Pi4J Kotlin/Java langs and remote
  * compiling / debugging to any ARM GPIO compatible hardware. Advanced AI features (TensorFlow)
