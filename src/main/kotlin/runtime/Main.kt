@@ -54,11 +54,6 @@ suspend fun main() {
 
     }
 
-    val dd = InternetConnection.getApiService(InternetConnection.BaseUrls.WEATHER_BASEURL)
-
-    val ddd = dd.getWeatherByName()
-
-
     //add infinite loop for java app running
     coroutineScope {
         println("Start infinite main thread")
