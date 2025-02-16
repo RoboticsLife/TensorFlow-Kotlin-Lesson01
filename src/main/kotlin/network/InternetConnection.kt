@@ -6,19 +6,20 @@ import retrofit2.converter.jackson.JacksonConverterFactory
 
 object InternetConnection {
 
-    private val okHttpClient = OkHttpClient()
-        .newBuilder()
-        //add interceptors if need
-        .build()
+    private val okHttpClient: OkHttpClient? = null
 
-    const val WEATHER_BASE_URL = "https://api.openweathermap.org/"
+    private fun getOkHttpClient(): OkHttpClient {
+        return OkHttpClient()
+            .newBuilder()
+            //add interceptors if need
+            .build()
+    }
 
-    fun getClient(): Retrofit = Retrofit.Builder()
-        .client(okHttpClient)
-        .addConverterFactory(JacksonConverterFactory.create())
-        .build()
-
-
-
-    fun getApiService(): Api = getClient().create(Api::class.java)
-}
+    fun getWeatherClient(baseUrl: String): Retrofit {
+        return Retrofit.Builder()
+            .client(okHttpClient ?: getOkHttpClient())
+            .baseUrl(baseUrl)
+            .addConverterFactory(JacksonConverterFactory.create())
+            .build()
+    }
+ }

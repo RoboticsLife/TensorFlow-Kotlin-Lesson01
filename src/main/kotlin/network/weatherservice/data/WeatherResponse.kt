@@ -1,5 +1,10 @@
-package network.data
+package network.weatherservice.data
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonInclude
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 data class WeatherResponse(
     val base: String? = null,
     val clouds: Clouds? = null,
@@ -9,7 +14,7 @@ data class WeatherResponse(
     val id: Int? = null,
     val main: Main? = null,
     val name: String? = null,
-    val snow: Snow? = null,
+    val rain: Rain? = null,
     val sys: Sys? = null,
     val timezone: Int? = null,
     val visibility: Int? = null,
@@ -36,7 +41,7 @@ data class WeatherResponse(
         val temp_min: Double? = null
     )
 
-    data class Snow(
+    data class Rain(
         val `1h`: Double? = null
     )
 
@@ -57,6 +62,7 @@ data class WeatherResponse(
 
     data class Wind(
         val deg: Int? = null,
+        val gust: Double? = null,
         val speed: Double? = null
     )
 }

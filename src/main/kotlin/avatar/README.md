@@ -1,0 +1,1 @@
+## package 'avatar' including everything about hardware layer and interactions with sensors & physical devices

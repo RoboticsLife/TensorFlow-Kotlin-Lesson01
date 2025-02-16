@@ -4,13 +4,14 @@ import avatar.Avatar
 import avatar.hardware.AvatarBuilder
 import avatar.hardware.HardwareTypes
 import avatar.hardware.types.circuitboard.CircuitBoard
+import brain.emitters.NetworkEmitters
 import com.pi4j.context.Context
 import com.pi4j.util.Console
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import network.InternetConnection
+import kotlinx.coroutines.*
+import network.weatherservice.WeatherNetworkService
 import runtime.setup.Configuration
 import runtime.setup.Injector
+import kotlin.math.abs
 
 
 /**
@@ -34,32 +35,50 @@ suspend fun main() {
     console.println(pi4j.boardInfo().boardModel)
     println(configuration)
 
+    val weatherNetworkService = WeatherNetworkService()
+
     if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
-        var counter = 0
 
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,
             actionHigh = {
-                counter++
-                (avatar.body as CircuitBoard).ledOn(0)
+                weatherNetworkService.getWeatherByName("toronto")
             },
-            actionLow =  {
-                (avatar.body as CircuitBoard).ledOff(0)
-                if (counter > 4) {
-                    (avatar.body as CircuitBoard).ledOn(1, 5000L)
-                    counter = 0
+            actionLow = {}
+        )
+    }
+
+    NetworkEmitters.weatherEmitter.collect { weather ->
+        if (weather.isSuccessful && weather.weatherResponse != null) {
+            println(weather)
+            val temp = weather.weatherResponse.main?.temp?.toInt()
+
+            CoroutineScope(Dispatchers.IO).launch {
+                //if temp = 0 -> blink 2 leds once
+                if (temp != null && temp == 0) {
+                    (avatar.body as CircuitBoard).ledOn(0, 1000L)
+                    (avatar.body as CircuitBoard).ledOn(1, 1000L)
+                } else if (temp != null && temp > 0) {
+                    //if temp > 0 -> blink green led $temp times
+                    for (i in 1..temp) {
+                        (avatar.body as CircuitBoard).ledOn(0, 1000L)
+                        delay(2000)
+                    }
+                } else if (temp != null && temp < 0) {
+                    //if temp > 0 -> blink green led $temp times
+                    for (i in 1..abs(temp)) {
+                        (avatar.body as CircuitBoard).ledOn(1, 1000L)
+                        delay(2000)
+                    }
                 }
             }
-        )
+
+
+
+        }
 
     }
 
-    //add infinite loop for java app running
-    coroutineScope {
-        println("Start infinite main thread")
-        delay(Long.MAX_VALUE)
-        println("End infinite main thread")
-    }
 }
 
 

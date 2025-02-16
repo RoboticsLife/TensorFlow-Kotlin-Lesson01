@@ -1,0 +1,1 @@
+## package 'environment' including all knowledge about real world, physical space and memory about environment and actions

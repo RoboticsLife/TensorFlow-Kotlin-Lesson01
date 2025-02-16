@@ -1,0 +1,1 @@
+## package 'network' including all connection interfaces, physical and logical transfer channels (internet, remote controlling, interaction with other devices in real world)

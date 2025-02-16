@@ -1,0 +1,1 @@
+## package 'brain' including all logic, AI and device decisions, avatar's perceptions
