@@ -1,6 +1,7 @@
 package avatar.hardware.types.circuitboard
 
 import avatar.hardware.parts.Button
+import avatar.hardware.parts.Buzzer
 import avatar.hardware.parts.Led
 import avatar.hardware.types.circuitboard.data.BodyCircuitBoard
 import com.pi4j.context.Context
@@ -31,6 +32,13 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
         configuration.buttons?.forEach {
             if (it?.pin != null) {
                 body.buttons.add(Button(pi4J, it))
+            }
+        }
+
+        /** init Buttons */
+        configuration.buzzers?.forEach {
+            if (it?.pin != null) {
+                body.buzzers.add(Buzzer(pi4J, it))
             }
         }
 

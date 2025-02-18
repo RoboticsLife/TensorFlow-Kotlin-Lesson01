@@ -42,11 +42,12 @@ suspend fun main() {
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,
             actionHigh = {
-                weatherNetworkService.getWeatherByName("toronto")
                 (avatar.body as CircuitBoard).buzzerSoundOn(0)
-            },
+                         },
             actionLow = {
                 (avatar.body as CircuitBoard).buzzerSoundOff(0)
+                weatherNetworkService.getWeatherByName("toronto")
+
             }
         )
     }
@@ -75,11 +76,11 @@ suspend fun main() {
                     }
                 }
 
-                (avatar.body as CircuitBoard).buzzerSoundOn(0, 500)
-                delay(1000)
-                (avatar.body as CircuitBoard).buzzerSoundOn(0, 500)
-                delay(1000)
-                (avatar.body as CircuitBoard).buzzerSoundOn(0, 500)
+                (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
+                delay(600)
+                (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
+                delay(600)
+                (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
 
             }
         }
