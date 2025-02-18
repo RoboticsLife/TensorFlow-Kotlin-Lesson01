@@ -5,7 +5,7 @@
 
 
 
-## LESSON 06: Network connection. Weather output after button pressing
+## LESSON 07: Buzzer sound
 
 
 #### Step 1: Weather service API

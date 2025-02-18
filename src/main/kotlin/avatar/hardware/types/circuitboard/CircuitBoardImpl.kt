@@ -77,6 +77,34 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
         return false
     }
 
+    override fun buzzerSoundOn(buzzerPosition: Int, durationInMillis: Long): Boolean {
+        if (buzzerPosition < 0 || buzzerPosition >= body.buzzers.size) return false
+        body.buzzers[buzzerPosition].threadScope?.cancel()
+        body.buzzers[buzzerPosition].threadScope = CoroutineScope(Job() + Dispatchers.IO).launch {
+            if (buzzerPosition < body.buzzers.size) {
+                body.buzzers[buzzerPosition].soundOn()
+
+                if (durationInMillis != 0L) {
+                    delay(durationInMillis)
+                    body.buzzers[buzzerPosition].soundOff()
+                }
+            }
+            this.cancel()
+        }
+        return true
+    }
+
+    override fun buzzerSoundOff(buzzerPosition: Int): Boolean {
+        if (buzzerPosition < 0) return false
+
+        if (buzzerPosition < body.buzzers.size) {
+            body.buzzers[buzzerPosition].threadScope?.cancel()
+            body.buzzers[buzzerPosition].soundOff()
+            return true
+        }
+        return false
+    }
+
     override fun getBatteryStatus(): Int {
         return 0
     }

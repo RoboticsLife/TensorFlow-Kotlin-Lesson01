@@ -15,7 +15,7 @@ import kotlin.math.abs
 
 
 /**
- * LESSON 06: Network connection. Weather output after button pressing
+ * LESSON 07: Buzzer sound
  * GPIO-Kotlin-Pi4j project.
  * Kotlin Gpio project. Working with IO lines on Raspberry Pi using Pi4J Kotlin/Java langs and remote
  * compiling / debugging to any ARM GPIO compatible hardware. Advanced AI features (TensorFlow)
@@ -43,8 +43,11 @@ suspend fun main() {
             buttonPosition = 0,
             actionHigh = {
                 weatherNetworkService.getWeatherByName("toronto")
+                (avatar.body as CircuitBoard).buzzerSoundOn(0)
             },
-            actionLow = {}
+            actionLow = {
+                (avatar.body as CircuitBoard).buzzerSoundOff(0)
+            }
         )
     }
 
@@ -71,6 +74,13 @@ suspend fun main() {
                         delay(2000)
                     }
                 }
+
+                (avatar.body as CircuitBoard).buzzerSoundOn(0, 500)
+                delay(1000)
+                (avatar.body as CircuitBoard).buzzerSoundOn(0, 500)
+                delay(1000)
+                (avatar.body as CircuitBoard).buzzerSoundOn(0, 500)
+
             }
         }
 

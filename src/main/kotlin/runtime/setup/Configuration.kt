@@ -13,6 +13,7 @@ data class Configuration(
     val hardwareTypeCode: Int? = null,
     val leds: List<LedConfig?>? = null,
     val buttons: List<ButtonConfig?>? = null,
+    val buzzers: List<BuzzerConfig?>? = null,
 ) {
     data class ButtonConfig(
         val name: String?,
@@ -21,6 +22,11 @@ data class Configuration(
     )
 
     data class LedConfig(
+        val name: String?,
+        val pin: Int?
+    )
+
+    data class BuzzerConfig(
         val name: String?,
         val pin: Int?
     )

@@ -22,5 +22,11 @@
       "pin": 21,
       "pullResistance": 0
     }
+  ],
+  "buzzers": [
+    {
+      "name": "Simple-Buzzer",
+      "pin": 26
+    }
   ]
 }
