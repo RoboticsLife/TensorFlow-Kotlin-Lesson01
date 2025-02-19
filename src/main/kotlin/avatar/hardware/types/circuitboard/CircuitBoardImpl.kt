@@ -41,8 +41,6 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
                 body.buzzers.add(Buzzer(pi4J, it))
             }
         }
-
-
     }
 
 

@@ -8,232 +8,197 @@
 ## LESSON 07: Buzzer sound
 
 
-#### Step 1: Weather service API
-
-https://openweathermap.org/current#name
-
-
-
-#### Step 2: Retrofit Dependencies
+#### Step 1: Add new type of device's part to Json configuration
 
 ````
-            <!-- Retrofit connection -->
-        <!-- https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit -->
-        <dependency>
-            <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>retrofit</artifactId>
-            <version>2.11.0</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.squareup.retrofit2/converter-jackson -->
-        <dependency>
-            <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>converter-jackson</artifactId>
-            <version>2.11.0</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-            <version>4.12.0</version>
-        </dependency>
-````
-
-#### Step 3: Retrofit instance 
-
-````
-package network
-
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.jackson.JacksonConverterFactory
-
-object InternetConnection {
-
-    private val okHttpClient: OkHttpClient? = null
-
-    private fun getOkHttpClient(): OkHttpClient {
-        return OkHttpClient()
-            .newBuilder()
-            //add interceptors if need
-            .build()
+ "buzzers": [
+    {
+      "name": "Simple-Buzzer",
+      "pin": 26
     }
-
-    fun getWeatherClient(baseUrl: String): Retrofit {
-        return Retrofit.Builder()
-            .client(okHttpClient ?: getOkHttpClient())
-            .baseUrl(baseUrl)
-            .addConverterFactory(JacksonConverterFactory.create())
-            .build()
-    }
- }
-````
-
-````
-package network.weatherservice
-
-import brain.emitters.NetworkEmitters
-import network.InternetConnection
-import runtime.setup.Settings
-
-class WeatherNetworkService {
-
-    companion object {
-        const val WEATHER_BASE_URL = "https://api.openweathermap.org/"
-    }
-
-    private val client = InternetConnection.getWeatherClient(WEATHER_BASE_URL)
-    private val apiService = client.create(Api::class.java)
-
-    fun getWeatherByName(city: String, units: String = "metric") {
-        val response = apiService.getWeatherByName(
-            appid = Settings.WEATHER_API_KEY,
-            city = city,
-            units = units
-        ).execute()
-
-        NetworkEmitters.emitWeatherResponse(
-            NetworkEmitters.WeatherData(
-                weatherResponse = if (response.isSuccessful) response.body() else null,
-                isSuccessful = response.isSuccessful,
-                httpCode = response.code(),
-                message = response.message()
-            )
-        )
-     }
-}
+  ]
 ````
 
 
-#### Step 4: Weather API calls interface
+#### Step 2: Add buzzer type to local data class
 
 ````
-package network.weatherservice
-
-import network.weatherservice.data.WeatherResponse
-import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.Query
-
-interface Api {
-
-    @GET("data/2.5/weather")
-    fun getWeatherByName(
-        @Query("appid") appid: String,
-        @Query("q") city: String,
-        @Query("units") units: String
-    ): Call<WeatherResponse>
-}
-````
-
-#### Step 5: Weather Response Data class
-
-````
-package network.weatherservice.data
+package runtime.setup
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonInclude
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
-data class WeatherResponse(
-    val base: String? = null,
-    val clouds: Clouds? = null,
-    val cod: Int? = null,
-    val coord: Coord? = null,
-    val dt: Int? = null,
-    val id: Int? = null,
-    val main: Main? = null,
-    val name: String? = null,
-    val rain: Rain? = null,
-    val sys: Sys? = null,
-    val timezone: Int? = null,
-    val visibility: Int? = null,
-    val weather: List<Weather?>? = null,
-    val wind: Wind? = null
+data class Configuration(
+    val configName: String? = null,
+    val configDescription: String? = null,
+    val configVersion: String? = null,
+    val hardwareModel: String? = null,
+    val hardwareModelCode: Int? = null,
+    val hardwareType: String? = null,
+    val hardwareTypeCode: Int? = null,
+    val leds: List<LedConfig?>? = null,
+    val buttons: List<ButtonConfig?>? = null,
+    val buzzers: List<BuzzerConfig?>? = null,
 ) {
-    data class Clouds(
-        val all: Int? = null
+    data class ButtonConfig(
+        val name: String?,
+        val pin: Int?,
+        val pullResistance: Int?
     )
 
-    data class Coord(
-        val lat: Double? = null,
-        val lon: Double? = null
+    data class LedConfig(
+        val name: String?,
+        val pin: Int?
     )
 
-    data class Main(
-        val feels_like: Double? = null,
-        val grnd_level: Int? = null,
-        val humidity: Int? = null,
-        val pressure: Int? = null,
-        val sea_level: Int? = null,
-        val temp: Double? = null,
-        val temp_max: Double? = null,
-        val temp_min: Double? = null
-    )
-
-    data class Rain(
-        val `1h`: Double? = null
-    )
-
-    data class Sys(
-        val country: String? = null,
-        val id: Int? = null,
-        val sunrise: Int? = null,
-        val sunset: Int? = null,
-        val type: Int? = null
-    )
-
-    data class Weather(
-        val description: String? = null,
-        val icon: String? = null,
-        val id: Int? = null,
-        val main: String? = null
-    )
-
-    data class Wind(
-        val deg: Int? = null,
-        val gust: Double? = null,
-        val speed: Double? = null
+    data class BuzzerConfig(
+        val name: String?,
+        val pin: Int?
     )
 }
 ````
 
-#### Step 6: Emitter as Kotlin SharedFlow to notify subscribers about weather
+#### Step 3: Add Buzzer class to Avatar body
 
 ````
-package brain.emitters
+package avatar.hardware.parts
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
-import network.weatherservice.data.WeatherResponse
+import com.pi4j.context.Context
+import com.pi4j.io.gpio.digital.DigitalOutput
+import com.pi4j.io.gpio.digital.DigitalOutputProvider
+import kotlinx.coroutines.Job
+import runtime.setup.Configuration
 
-object NetworkEmitters {
+class Buzzer(pi4j: Context, buzzerConfig: Configuration.BuzzerConfig) {
 
-    data class WeatherData(
-        val weatherResponse: WeatherResponse? = null,
-        val isSuccessful: Boolean = false,
-        val httpCode: Int = 0,
-        val message: String = ""
-    )
+    private lateinit var buzzerOutput: DigitalOutput
+    private lateinit var name: String
+    var threadScope: Job? = null
 
-    private val _weatherEmitter = MutableSharedFlow<WeatherData>()
-    val weatherEmitter = _weatherEmitter.asSharedFlow()
+    init {
+        buildBuzzer(pi4j, buzzerConfig)
+    }
 
-    fun emitWeatherResponse(weatherData: WeatherData) {
-        CoroutineScope(Dispatchers.IO).launch {
-            _weatherEmitter.emit(weatherData)
-        }
+    private fun buildBuzzer(pi4j: Context, buzzerConfig: Configuration.BuzzerConfig) {
+        buzzerOutput = pi4j.digitalOutput<DigitalOutputProvider>().create(buzzerConfig.pin)
+        name = buzzerConfig.name ?: "BUZZER"
+    }
+
+    fun soundOn() {
+        buzzerOutput.high()
+    }
+
+    fun soundOff() {
+        buzzerOutput.low()
     }
 
 }
 ````
 
-#### Step 7: Main thread logic. Network call after button pressing and weather output
+#### Step 4: Add functions to Circuit body type Interface and implement it
+
+````
+package avatar.hardware.types.circuitboard.data
+
+import avatar.body.BodyPrototype
+import avatar.hardware.HardwareTypes
+import avatar.hardware.parts.Button
+import avatar.hardware.parts.Buzzer
+import avatar.hardware.parts.Led
+
+data class BodyCircuitBoard(
+    override var type: HardwareTypes.Type = HardwareTypes.Type.CIRCUIT_BOARD,
+    val leds: MutableList<Led> = mutableListOf(),
+    val buttons: MutableList<Button> = mutableListOf(),
+    val buzzers: MutableList<Buzzer> = mutableListOf(),
+    //TODO: Add hardware parts if need
+
+): BodyPrototype()
+````
+
+````
+package avatar.hardware.types.circuitboard
+
+import avatar.hardware.Body
+
+interface CircuitBoard: Body {
+    
+    fun getLedsCount(): Int
+
+    fun ledOn(ledPosition: Int = 0, durationInMillis: Long = 0L): Boolean
+
+    fun ledOff(ledPosition: Int = 0): Boolean
+
+    fun addButtonListeners(buttonPosition: Int = 0, actionHigh: () -> Unit, actionLow: () -> Unit): Boolean
+
+    fun buzzerSoundOn(buzzerPosition: Int = 0, durationInMillis: Long = 0L): Boolean
+
+    fun buzzerSoundOff(buzzerPosition: Int = 0): Boolean
+
+}
+````
+
+````
+    private fun initHardware() {
+
+        //PARSE CONFIG
+
+        /** init Leds */
+        configuration.leds?.forEach {
+            if (it?.pin != null) {
+                body.leds.add(Led(pi4J, it))
+            }
+        }
+
+        /** init Buttons */
+        configuration.buttons?.forEach {
+            if (it?.pin != null) {
+                body.buttons.add(Button(pi4J, it))
+            }
+        }
+
+        /** init Buttons */
+        configuration.buzzers?.forEach {
+            if (it?.pin != null) {
+                body.buzzers.add(Buzzer(pi4J, it))
+            }
+        }
+    }
+    
+    ////////////////
+    
+     override fun buzzerSoundOn(buzzerPosition: Int, durationInMillis: Long): Boolean {
+        if (buzzerPosition < 0 || buzzerPosition >= body.buzzers.size) return false
+        body.buzzers[buzzerPosition].threadScope?.cancel()
+        body.buzzers[buzzerPosition].threadScope = CoroutineScope(Job() + Dispatchers.IO).launch {
+            if (buzzerPosition < body.buzzers.size) {
+                body.buzzers[buzzerPosition].soundOn()
+
+                if (durationInMillis != 0L) {
+                    delay(durationInMillis)
+                    body.buzzers[buzzerPosition].soundOff()
+                }
+            }
+            this.cancel()
+        }
+        return true
+    }
+
+    override fun buzzerSoundOff(buzzerPosition: Int): Boolean {
+        if (buzzerPosition < 0) return false
+
+        if (buzzerPosition < body.buzzers.size) {
+            body.buzzers[buzzerPosition].threadScope?.cancel()
+            body.buzzers[buzzerPosition].soundOff()
+            return true
+        }
+        return false
+    }
+    
+    
+````
+
+#### Step 5: Main thread logic. Trigger BuzzerSoundOn / Off function by event
 
 ````
     val weatherNetworkService = WeatherNetworkService()
@@ -243,39 +208,15 @@ object NetworkEmitters {
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,
             actionHigh = {
+                (avatar.body as CircuitBoard).buzzerSoundOn(0)
+                         },
+            actionLow = {
+                (avatar.body as CircuitBoard).buzzerSoundOff(0)
                 weatherNetworkService.getWeatherByName("toronto")
-            },
-            actionLow = {}
-        )
-    }
 
-    NetworkEmitters.weatherEmitter.collect { weather ->
-        if (weather.isSuccessful && weather.weatherResponse != null) {
-            println(weather)
-            val temp = weather.weatherResponse.main?.temp?.toInt()
-
-            CoroutineScope(Dispatchers.IO).launch {
-                //if temp = 0 -> blink 2 leds once
-                if (temp != null && temp == 0) {
-                    (avatar.body as CircuitBoard).ledOn(0, 1000L)
-                    (avatar.body as CircuitBoard).ledOn(1, 1000L)
-                } else if (temp != null && temp > 0) {
-                    //if temp > 0 -> blink green led $temp times
-                    for (i in 1..temp) {
-                        (avatar.body as CircuitBoard).ledOn(0, 1000L)
-                        delay(2000)
-                    }
-                } else if (temp != null && temp < 0) {
-                    //if temp > 0 -> blink green led $temp times
-                    for (i in 1..abs(temp)) {
-                        (avatar.body as CircuitBoard).ledOn(1, 1000L)
-                        delay(2000)
-                    }
-                }
             }
-        }
-
-    }
+        )
+    }  
 ````
 
 #### * Additional settings: remote compiling / debugging setup
