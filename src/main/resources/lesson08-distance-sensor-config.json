@@ -1,0 +1,43 @@
+{
+  "configName": "lesson03-two-leds",
+  "configDescription": "This is a simple configuration with 2 leds",
+  "configVersion": "1.0.0",
+  "hardwareType": "circuitboard",
+  "hardwareModel": "leds",
+  "hardwareTypeCode": 1,
+  "hardwareModelCode": 1,
+  "leds": [
+    {
+      "name": "green-led",
+      "pin": 2
+    },
+    {
+      "name": "red-led",
+      "pin": 3
+    }
+  ],
+  "buttons": [
+    {
+      "name": "ControlButton",
+      "pin": 21,
+      "pullResistance": 0
+    }
+  ],
+  "buzzers": [
+    {
+      "name": "Simple-Buzzer",
+      "pin": 26
+    }
+  ],
+  "distanceSensors": [
+    {
+      "name": "distance-sensor-HC-SR04",
+      "hardwareModel": "HC-SR04",
+      "hardwareVersion": "2021",
+      "pinTrigger": 25,
+      "pinEcho": 24,
+      "installedSensorPosition": 0,
+      "movingAngle": 0
+    }
+  ]
+}

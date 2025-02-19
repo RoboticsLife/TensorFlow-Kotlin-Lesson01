@@ -5,7 +5,7 @@ import avatar.hardware.HardwareTypes
 import avatar.hardware.types.circuitboard.CircuitBoardImpl
 import avatar.hardware.types.wheelsrobot.WheelsRobotImpl
 import com.pi4j.context.Context
-import runtime.setup.Configuration
+import brain.data.Configuration
 
 /** main class to interact with hardware devices */
 class Avatar {

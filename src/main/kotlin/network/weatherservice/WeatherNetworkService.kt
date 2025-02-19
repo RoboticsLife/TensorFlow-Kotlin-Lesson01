@@ -1,5 +1,6 @@
 package network.weatherservice
 
+import brain.data.WeatherData
 import brain.emitters.NetworkEmitters
 import network.InternetConnection
 import runtime.setup.Settings
@@ -21,7 +22,7 @@ class WeatherNetworkService {
         ).execute()
 
         NetworkEmitters.emitWeatherResponse(
-            NetworkEmitters.WeatherData(
+            WeatherData(
                 weatherResponse = if (response.isSuccessful) response.body() else null,
                 isSuccessful = response.isSuccessful,
                 httpCode = response.code(),

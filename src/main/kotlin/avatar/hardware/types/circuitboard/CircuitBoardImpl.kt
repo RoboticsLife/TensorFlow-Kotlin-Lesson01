@@ -1,12 +1,13 @@
 package avatar.hardware.types.circuitboard
 
-import avatar.hardware.parts.Button
-import avatar.hardware.parts.Buzzer
-import avatar.hardware.parts.Led
+import avatar.hardware.parts.*
 import avatar.hardware.types.circuitboard.data.BodyCircuitBoard
 import com.pi4j.context.Context
 import kotlinx.coroutines.*
-import runtime.setup.Configuration
+import brain.data.Configuration
+import brain.data.Distance
+import brain.emitters.DistanceEmitters
+import java.util.concurrent.TimeUnit
 
 class CircuitBoardImpl(private val pi4J: Context, private val configuration: Configuration): CircuitBoard {
 
@@ -35,10 +36,20 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
             }
         }
 
-        /** init Buttons */
+        /** init Buzzers */
         configuration.buzzers?.forEach {
             if (it?.pin != null) {
                 body.buzzers.add(Buzzer(pi4J, it))
+            }
+        }
+
+        /** init Sensors */
+        configuration.distanceSensors?.forEach {
+            if (it?.pinTrigger != null && it.pinEcho != null) {
+                when (DistanceSensor.isConfigurationValid(it)) {
+                    DistanceSensor.NAME_HARDWARE_MODEL_HC_SR_04 ->
+                        body.distanceSensors.add(DistanceSensorHcSr04v2021(pi4J, it))
+                }
             }
         }
     }
@@ -109,6 +120,54 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
             return true
         }
         return false
+    }
+
+    override fun startDistanceMeasuring(sensorPosition: Int, periodInMillis: Long): Boolean {
+        println("ssssss!!!!!!!!! = #${body.distanceSensors.size}")
+        println("ssssss!!!!!!!!! = #${body.distanceSensors[sensorPosition]}")
+        if (sensorPosition >= body.distanceSensors.size) return false
+        body.distanceSensors[sensorPosition].isActive = true
+
+        body.distanceSensors[sensorPosition].threadScopeSensorRequest?.cancel()
+        body.distanceSensors[sensorPosition].threadScopeSensorRequest = CoroutineScope(Job() + Dispatchers.IO).launch {
+            println("!!!!!!!!!")
+            /** Loop cycle while sensor is active */
+            while (body.distanceSensors[sensorPosition].isActive) {
+                body.distanceSensors[sensorPosition].triggerOutputHigh()
+                TimeUnit.MICROSECONDS.sleep(10)
+                body.distanceSensors[sensorPosition].triggerOutputLow()
+
+                while (body.distanceSensors[sensorPosition].echoInput.isLow) {}
+                val echoLowNanoTime = System.nanoTime()
+                while (body.distanceSensors[sensorPosition].echoInput.isHigh) {}
+                val echoHighNanoTime = System.nanoTime()
+
+                DistanceEmitters.emitDistanceData(
+                    Distance(
+                        sensorPosition = sensorPosition,
+                        echoHighNanoTime = echoHighNanoTime,
+                        echoLowNanoTime = echoLowNanoTime
+                    )
+                )
+
+                delay(periodInMillis)
+            }
+        }
+        return true
+    }
+
+    override fun stopDistanceMeasuring(sensorPosition: Int): Boolean {
+        body.distanceSensors[sensorPosition].isActive = false
+        return true
+    }
+
+    override fun getDistanceMeasuringState(sensorPosition: Int): Boolean {
+        return if (sensorPosition < body.distanceSensors.size) {
+            body.distanceSensors[sensorPosition].isActive
+        } else {
+            false
+        }
+
     }
 
     override fun getBatteryStatus(): Int {

@@ -4,6 +4,7 @@ import avatar.body.BodyPrototype
 import avatar.hardware.HardwareTypes
 import avatar.hardware.parts.Button
 import avatar.hardware.parts.Buzzer
+import avatar.hardware.parts.DistanceSensor
 import avatar.hardware.parts.Led
 
 data class BodyCircuitBoard(
@@ -11,6 +12,7 @@ data class BodyCircuitBoard(
     val leds: MutableList<Led> = mutableListOf(),
     val buttons: MutableList<Button> = mutableListOf(),
     val buzzers: MutableList<Buzzer> = mutableListOf(),
+    val distanceSensors: MutableList<DistanceSensor> = mutableListOf(),
     //TODO: Add hardware parts if need
 
 ): BodyPrototype()

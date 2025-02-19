@@ -16,4 +16,10 @@ interface CircuitBoard: Body {
 
     fun buzzerSoundOff(buzzerPosition: Int = 0): Boolean
 
+    fun startDistanceMeasuring(sensorPosition: Int = 0, periodInMillis: Long = 500): Boolean
+
+    fun stopDistanceMeasuring(sensorPosition: Int = 0): Boolean
+
+    fun getDistanceMeasuringState(sensorPosition: Int = 0): Boolean
+
 }

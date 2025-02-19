@@ -3,13 +3,16 @@ package org.example.runtime
 import avatar.Avatar
 import avatar.hardware.AvatarBuilder
 import avatar.hardware.HardwareTypes
+import avatar.hardware.parts.DistanceSensor
 import avatar.hardware.types.circuitboard.CircuitBoard
 import brain.emitters.NetworkEmitters
 import com.pi4j.context.Context
 import com.pi4j.util.Console
 import kotlinx.coroutines.*
 import network.weatherservice.WeatherNetworkService
-import runtime.setup.Configuration
+import brain.data.Configuration
+import brain.emitters.DistanceEmitters
+import brain.utils.toCm
 import runtime.setup.Injector
 import kotlin.math.abs
 
@@ -30,6 +33,7 @@ lateinit var avatar: Avatar
 suspend fun main() {
 
     init()
+    collectData()
 
     //Print out
     console.println(pi4j.boardInfo().boardModel)
@@ -47,45 +51,17 @@ suspend fun main() {
             actionLow = {
                 (avatar.body as CircuitBoard).buzzerSoundOff(0)
                 weatherNetworkService.getWeatherByName("toronto")
+                if (!(avatar.body as CircuitBoard).getDistanceMeasuringState()) {
+                    (avatar.body as CircuitBoard).startDistanceMeasuring(periodInMillis = 1000)
+                } else {
+                    (avatar.body as CircuitBoard).stopDistanceMeasuring()
+                }
+
 
             }
         )
     }
 
-    NetworkEmitters.weatherEmitter.collect { weather ->
-        if (weather.isSuccessful && weather.weatherResponse != null) {
-            println(weather)
-            val temp = weather.weatherResponse.main?.temp?.toInt()
-
-            CoroutineScope(Dispatchers.IO).launch {
-                //if temp = 0 -> blink 2 leds once
-                if (temp != null && temp == 0) {
-                    (avatar.body as CircuitBoard).ledOn(0, 1000L)
-                    (avatar.body as CircuitBoard).ledOn(1, 1000L)
-                } else if (temp != null && temp > 0) {
-                    //if temp > 0 -> blink green led $temp times
-                    for (i in 1..temp) {
-                        (avatar.body as CircuitBoard).ledOn(0, 1000L)
-                        delay(2000)
-                    }
-                } else if (temp != null && temp < 0) {
-                    //if temp > 0 -> blink green led $temp times
-                    for (i in 1..abs(temp)) {
-                        (avatar.body as CircuitBoard).ledOn(1, 1000L)
-                        delay(2000)
-                    }
-                }
-
-                (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
-                delay(600)
-                (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
-                delay(600)
-                (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
-
-            }
-        }
-
-    }
 
 }
 
@@ -93,6 +69,56 @@ suspend fun main() {
 fun init() {
     pi4j = Injector.getPi4j()
     console = Injector.getPi4jConsole()
-    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson03config.json")
+    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson08-distance-sensor-config.json")
     avatar = AvatarBuilder(pi4j, configuration).build()
+}
+
+fun collectData() {
+
+    val jobWeatherCollector = CoroutineScope(Job() + Dispatchers.IO).launch {
+        NetworkEmitters.weatherEmitter.collect { weather ->
+            if (weather.isSuccessful && weather.weatherResponse != null) {
+                println(weather)
+                val temp = weather.weatherResponse.main?.temp?.toInt()
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    //if temp = 0 -> blink 2 leds once
+                    if (temp != null && temp == 0) {
+                        (avatar.body as CircuitBoard).ledOn(0, 1000L)
+                        (avatar.body as CircuitBoard).ledOn(1, 1000L)
+                    } else if (temp != null && temp > 0) {
+                        //if temp > 0 -> blink green led $temp times
+                        for (i in 1..temp) {
+                            (avatar.body as CircuitBoard).ledOn(0, 1000L)
+                            delay(2000)
+                        }
+                    } else if (temp != null && temp < 0) {
+                        //if temp > 0 -> blink green led $temp times
+                        for (i in 1..abs(temp)) {
+                            (avatar.body as CircuitBoard).ledOn(1, 1000L)
+                            delay(2000)
+                        }
+                    }
+
+                    (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
+                    delay(600)
+                    (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
+                    delay(600)
+                    (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
+
+                }
+            }
+
+        }
+    }
+
+    val jobDistanceCollector = CoroutineScope(Job() + Dispatchers.IO).launch {
+        DistanceEmitters.distanceSensor.collect { distance ->
+            if (distance.toCm(DistanceSensor.NAME_HARDWARE_MODEL_HC_SR_04) == Float.POSITIVE_INFINITY) {
+                println("Distance is out of measuring")
+            } else {
+                println("Distance = ${distance.toCm()} cm")
+            }
+        }
+    }
 }

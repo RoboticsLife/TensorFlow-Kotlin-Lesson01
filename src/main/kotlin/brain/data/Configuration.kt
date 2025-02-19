@@ -1,4 +1,4 @@
-package runtime.setup
+package brain.data
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
@@ -14,6 +14,7 @@ data class Configuration(
     val leds: List<LedConfig?>? = null,
     val buttons: List<ButtonConfig?>? = null,
     val buzzers: List<BuzzerConfig?>? = null,
+    val distanceSensors: List<DistanceSensorConfig?>? = null,
 ) {
     data class ButtonConfig(
         val name: String?,
@@ -29,5 +30,15 @@ data class Configuration(
     data class BuzzerConfig(
         val name: String?,
         val pin: Int?
+    )
+
+    data class DistanceSensorConfig(
+        val name: String?,
+        val hardwareModel: String?,
+        val hardwareVersion: String?,
+        val pinTrigger: Int?,
+        val pinEcho: Int?,
+        val installedSensorPosition: Int?,
+        val movingAngle: Int? = 0
     )
 }

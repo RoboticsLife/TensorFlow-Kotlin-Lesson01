@@ -4,7 +4,7 @@ import com.pi4j.context.Context
 import com.pi4j.io.gpio.digital.DigitalOutput
 import com.pi4j.io.gpio.digital.DigitalOutputProvider
 import kotlinx.coroutines.Job
-import runtime.setup.Configuration
+import brain.data.Configuration
 
 class Led(pi4j: Context, ledConfig: Configuration.LedConfig) {
 
