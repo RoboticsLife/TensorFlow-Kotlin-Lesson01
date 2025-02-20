@@ -43,15 +43,15 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
             }
         }
 
-        /** init Sensors */
-        configuration.distanceSensors?.forEach {
-            if (it?.pinTrigger != null && it.pinEcho != null) {
-                when (DistanceSensor.isConfigurationValid(it)) {
-                    DistanceSensor.NAME_HARDWARE_MODEL_HC_SR_04 ->
-                        body.distanceSensors.add(DistanceSensorHcSr04v2021(pi4J, it))
+            /** init Sensors */
+            configuration.distanceSensors?.forEach {
+                if (it?.pinTrigger != null && it.pinEcho != null) {
+                    when (DistanceSensor.isConfigurationValid(it)) {
+                        DistanceSensor.NAME_HARDWARE_MODEL_HC_SR_04 ->
+                            body.distanceSensors.add(DistanceSensorHcSr04v2021(pi4J, it))
+                    }
                 }
             }
-        }
     }
 
 
@@ -123,14 +123,11 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
     }
 
     override fun startDistanceMeasuring(sensorPosition: Int, periodInMillis: Long): Boolean {
-        println("ssssss!!!!!!!!! = #${body.distanceSensors.size}")
-        println("ssssss!!!!!!!!! = #${body.distanceSensors[sensorPosition]}")
         if (sensorPosition >= body.distanceSensors.size) return false
         body.distanceSensors[sensorPosition].isActive = true
 
         body.distanceSensors[sensorPosition].threadScopeSensorRequest?.cancel()
         body.distanceSensors[sensorPosition].threadScopeSensorRequest = CoroutineScope(Job() + Dispatchers.IO).launch {
-            println("!!!!!!!!!")
             /** Loop cycle while sensor is active */
             while (body.distanceSensors[sensorPosition].isActive) {
                 body.distanceSensors[sensorPosition].triggerOutputHigh()
@@ -167,7 +164,6 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
         } else {
             false
         }
-
     }
 
     override fun getBatteryStatus(): Int {
