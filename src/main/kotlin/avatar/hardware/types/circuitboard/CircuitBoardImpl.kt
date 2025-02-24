@@ -43,15 +43,26 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
             }
         }
 
-            /** init Sensors */
-            configuration.distanceSensors?.forEach {
-                if (it?.pinTrigger != null && it.pinEcho != null) {
-                    when (DistanceSensor.isConfigurationValid(it)) {
-                        DistanceSensor.NAME_HARDWARE_MODEL_HC_SR_04 ->
-                            body.distanceSensors.add(DistanceSensorHcSr04v2021(pi4J, it))
-                    }
+        /** init Sensors */
+        configuration.distanceSensors?.forEach {
+            if (it?.pinTrigger != null && it.pinEcho != null) {
+                when (DistanceSensor.isConfigurationValid(it)) {
+                    DistanceSensor.NAME_HARDWARE_MODEL_HC_SR_04 ->
+                        body.distanceSensors.add(DistanceSensorHcSr04v2021(pi4J, it))
                 }
             }
+        }
+
+        /** init displays */
+        configuration.displays?.forEach {
+            if (it?.pin01 != null && it?.pin02 != null) {
+                when (Display.isConfigurationValid(it)) {
+                    Display.NAME_HARDWARE_MODEL_3461BS_1 ->
+                        body.displays.add(Display3461BS1(pi4J, it))
+                }
+            }
+        }
+
     }
 
 
@@ -164,6 +175,15 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
         } else {
             false
         }
+    }
+
+    override fun displayPrint(displayPosition: Int, outFloat: Float?, string: String?, printTimeInMillis: Int?): Boolean {
+        if (displayPosition < 0) return false
+
+        if (displayPosition < body.displays.size) {
+            return body.displays[displayPosition].outputPrint(outFloat, string, printTimeInMillis)
+        }
+        return false
     }
 
     override fun getBatteryStatus(): Int {

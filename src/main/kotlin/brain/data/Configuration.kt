@@ -15,23 +15,28 @@ data class Configuration(
     val buttons: List<ButtonConfig?>? = null,
     val buzzers: List<BuzzerConfig?>? = null,
     val distanceSensors: List<DistanceSensorConfig?>? = null,
+    val displays: List<DisplayConfig?>? = null,
 ) {
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class ButtonConfig(
         val name: String?,
         val pin: Int?,
         val pullResistance: Int?
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class LedConfig(
         val name: String?,
         val pin: Int?
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class BuzzerConfig(
         val name: String?,
         val pin: Int?
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class DistanceSensorConfig(
         val name: String?,
         val hardwareModel: String?,
@@ -40,5 +45,24 @@ data class Configuration(
         val pinEcho: Int?,
         val installedSensorPosition: Int?,
         val movingAngle: Int? = 0
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class DisplayConfig(
+        val name: String?,
+        val hardwareModel: String?,
+        val hardwareVersion: String?,
+        val pin01: Int?,
+        val pin02: Int?,
+        val pin03: Int?,
+        val pin04: Int?,
+        val pin05: Int?,
+        val pin06: Int?,
+        val pin07: Int?,
+        val pin08: Int?,
+        val pin09: Int?,
+        val pin10: Int?,
+        val pin11: Int?,
+        val pin12: Int?,
     )
 }

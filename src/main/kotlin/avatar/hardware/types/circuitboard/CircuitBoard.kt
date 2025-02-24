@@ -22,4 +22,6 @@ interface CircuitBoard: Body {
 
     fun getDistanceMeasuringState(sensorPosition: Int = 0): Boolean
 
+    fun displayPrint(displayPosition: Int = 0, outFloat: Float? = null, string: String? = null, printTimeInMillis: Int? = 0): Boolean
+
 }

@@ -43,6 +43,8 @@ suspend fun main() {
 
     if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
 
+        (avatar.body as CircuitBoard).displayPrint(string = "_LO_")
+
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,
             actionHigh = {
@@ -69,7 +71,7 @@ suspend fun main() {
 fun init() {
     pi4j = Injector.getPi4j()
     console = Injector.getPi4jConsole()
-    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson08-distance-sensor-config.json")
+    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson09-4digits-display.json")
     avatar = AvatarBuilder(pi4j, configuration).build()
 }
 
@@ -80,6 +82,7 @@ fun collectData() {
             if (weather.isSuccessful && weather.weatherResponse != null) {
                 println(weather)
                 val temp = weather.weatherResponse.main?.temp?.toInt()
+                (avatar.body as CircuitBoard).displayPrint(string = temp.toString())
 
                 CoroutineScope(Dispatchers.IO).launch {
                     //if temp = 0 -> blink 2 leds once

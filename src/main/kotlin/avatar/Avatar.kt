@@ -43,6 +43,10 @@ class Avatar {
                 type = HardwareTypes.Type.WHEELS_ROBOT
                 body = WheelsRobotImpl(pi4J, configuration ?: Configuration())
             }
+            else -> {
+                type = HardwareTypes.Type.UNKNOWN
+                body = CircuitBoardImpl(pi4J, Configuration())
+            }
 
         }
 

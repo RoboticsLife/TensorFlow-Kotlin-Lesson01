@@ -2,10 +2,7 @@ package avatar.hardware.types.circuitboard.data
 
 import avatar.body.BodyPrototype
 import avatar.hardware.HardwareTypes
-import avatar.hardware.parts.Button
-import avatar.hardware.parts.Buzzer
-import avatar.hardware.parts.DistanceSensor
-import avatar.hardware.parts.Led
+import avatar.hardware.parts.*
 
 data class BodyCircuitBoard(
     override var type: HardwareTypes.Type = HardwareTypes.Type.CIRCUIT_BOARD,
@@ -13,6 +10,7 @@ data class BodyCircuitBoard(
     val buttons: MutableList<Button> = mutableListOf(),
     val buzzers: MutableList<Buzzer> = mutableListOf(),
     val distanceSensors: MutableList<DistanceSensor> = mutableListOf(),
+    val displays: MutableList<Display> = mutableListOf(),
     //TODO: Add hardware parts if need
 
 ): BodyPrototype()
