@@ -5,23 +5,30 @@
 
 
 
-## LESSON 08: HC-SR04 Ultrasonic Distance Sensor
+## LESSON 09: 4-Digits Display 3461BS-1 
 
 
-#### Step 1: Add HC-SR04 Ultrasonic Distance Sensor type of device's part to Json configuration
+#### Step 1: Add 3461BS-1  4-Digits Display type of device's part to Json configuration
 
 ````
-  "distanceSensors": [
+ "displays": [
     {
-      "name": "distance-sensor-HC-SR04",
-      "hardwareModel": "HC-SR04",
-      "hardwareVersion": "2021",
-      "pinTrigger": 25,
-      "pinEcho": 24,
-      "installedSensorPosition": 0,
-      "movingAngle": 0
+      "name": "4 Digits display (7 led sections)",
+      "hardwareModel": "3461BS-1",
+      "hardwareVersion": "",
+      "pin01": 20,
+      "pin02": 16,
+      "pin03": 12,
+      "pin04": 18,
+      "pin05": 27,
+      "pin06": 17,
+      "pin07": 22,
+      "pin08": 5,
+      "pin09": 6,
+      "pin10": 13,
+      "pin11": 19,
+      "pin12": 23
     }
-  ]
 ````
 
 
@@ -45,23 +52,28 @@ data class Configuration(
     val buttons: List<ButtonConfig?>? = null,
     val buzzers: List<BuzzerConfig?>? = null,
     val distanceSensors: List<DistanceSensorConfig?>? = null,
+    val displays: List<DisplayConfig?>? = null,
 ) {
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class ButtonConfig(
         val name: String?,
         val pin: Int?,
         val pullResistance: Int?
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class LedConfig(
         val name: String?,
         val pin: Int?
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class BuzzerConfig(
         val name: String?,
         val pin: Int?
     )
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     data class DistanceSensorConfig(
         val name: String?,
         val hardwareModel: String?,
@@ -71,48 +83,53 @@ data class Configuration(
         val installedSensorPosition: Int?,
         val movingAngle: Int? = 0
     )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class DisplayConfig(
+        val name: String?,
+        val hardwareModel: String?,
+        val hardwareVersion: String?,
+        val pin01: Int?,
+        val pin02: Int?,
+        val pin03: Int?,
+        val pin04: Int?,
+        val pin05: Int?,
+        val pin06: Int?,
+        val pin07: Int?,
+        val pin08: Int?,
+        val pin09: Int?,
+        val pin10: Int?,
+        val pin11: Int?,
+        val pin12: Int?,
+    )
 }
 ````
 
-#### Step 3: Create Distance Sensor Interface and implement a specific type of it
+#### Step 3: Create Display Interface and implement a specific type of it for 3461BS-1
 
 ````
 package avatar.hardware.parts
 
-import com.pi4j.io.gpio.digital.DigitalInput
-import com.pi4j.io.gpio.digital.DigitalOutput
-import kotlinx.coroutines.Job
 import brain.data.Configuration
 
-interface DistanceSensor {
+interface Display {
 
-    var triggerOutput: DigitalOutput
-    var echoInput: DigitalInput
-    var isActive: Boolean
+    fun outputPrint(outFloat: Float? = null, string: String? = null, printTimeInMillis: Int? = 0): Boolean
 
-    var threadScopeSensorRequest: Job?
-
-    fun triggerOutputHigh()
-
-    fun triggerOutputLow()
-
-
-    //logic for parsing sensor types
     companion object {
-        const val NAME_HARDWARE_MODEL_HC_SR_04 = "HC-SR04"
-        const val NAME_HARDWARE_VERSION_HC_SR_04 = "2021"
-        //add other sensors types
+        const val NAME_HARDWARE_MODEL_3461BS_1 = "3461BS-1"
 
-        fun isConfigurationValid(sensorConfig: Configuration.DistanceSensorConfig): String {
 
-            if (sensorConfig.hardwareModel
-                    ?.filterNot { it == ' ' || it == '-' ||  it == '_' ||  it == ',' ||  it == '.'}?.lowercase()
-                    ?.contains(NAME_HARDWARE_MODEL_HC_SR_04.filterNot { it == ' ' || it ==  '-' ||  it == '_' ||  it == ',' ||  it == '.'}
+        fun isConfigurationValid(displayConfig: Configuration.DisplayConfig): String {
+
+            if (displayConfig.hardwareModel
+                    ?.filterNot { it == ' ' || it == '-' || it == '_' || it == ',' || it == '.' }?.lowercase()
+                    ?.contains(NAME_HARDWARE_MODEL_3461BS_1.filterNot { it == ' ' || it == '-' || it == '_' || it == ',' || it == '.' }
                         .lowercase()) == true) {
-                return NAME_HARDWARE_MODEL_HC_SR_04
+                return NAME_HARDWARE_MODEL_3461BS_1
             } else if (false) {
-                //add other types parsing
-                return  ""
+                //TODO add other types implementations
+                return ""
             } else return ""
         }
     }
@@ -123,63 +140,163 @@ interface DistanceSensor {
 ````
 package avatar.hardware.parts
 
-import com.pi4j.context.Context
-import com.pi4j.io.gpio.digital.DigitalInput
-import com.pi4j.io.gpio.digital.DigitalOutput
-import com.pi4j.io.gpio.digital.DigitalState
-import com.pi4j.io.gpio.digital.PullResistance
-import kotlinx.coroutines.Job
 import brain.data.Configuration
+import com.pi4j.context.Context
+import com.pi4j.io.gpio.digital.DigitalOutput
+import com.pi4j.io.gpio.digital.DigitalOutputProvider
+import kotlinx.coroutines.*
 
-class DistanceSensorHcSr04v2021(pi4j: Context, distanceSensorConfig: Configuration.DistanceSensorConfig): DistanceSensor {
-    override lateinit var triggerOutput: DigitalOutput
-    override lateinit var echoInput: DigitalInput
-    override var isActive: Boolean = false
-    override var threadScopeSensorRequest: Job? = null
+class Display3461BS1(pi4j: Context, displayConfig: Configuration.DisplayConfig): Display {
+
+    //12 output pins
+    private lateinit var output01: DigitalOutput
+    private lateinit var output02: DigitalOutput
+    private lateinit var output03: DigitalOutput
+    private lateinit var output04: DigitalOutput
+    private lateinit var output05: DigitalOutput
+    private lateinit var output06: DigitalOutput
+    private lateinit var output07: DigitalOutput
+    private lateinit var output08: DigitalOutput
+    private lateinit var output09: DigitalOutput
+    private lateinit var output10: DigitalOutput
+    private lateinit var output11: DigitalOutput
+    private lateinit var output12: DigitalOutput
+
+    //digit's cursors
+    private lateinit var digitsAddressRegisters: List<DigitalOutput>
+    //symbol sector's cursors
+    private lateinit var symbolsAddressRegisters: List<DigitalOutput>
+    //dot divider cursor
+    private lateinit var dotDividerAddressRegister: DigitalOutput
+
+    private var name: String? = null
+    private var threadScope: Job? = null
+
 
     init {
-        buildSensor(pi4j, distanceSensorConfig)
+        buildDisplayRegisters(pi4j, displayConfig)
     }
 
-    private fun buildSensor(pi4j: Context, distanceSensorConfig: Configuration.DistanceSensorConfig) {
-        if (distanceSensorConfig.pinTrigger != null) setTriggerOutput(pi4j, distanceSensorConfig.pinTrigger) else return
-        if (distanceSensorConfig.pinEcho != null) setEchoInput(pi4j, distanceSensorConfig.pinEcho) else return
+    private fun buildDisplayRegisters(pi4j: Context, displayConfig: Configuration.DisplayConfig) {
+        try {
+            output01 = pi4j.digitalOutput<DigitalOutputProvider>().create(displayConfig.pin01)
+            output02 = pi4j.digitalOutput<DigitalOutputProvider>().create(displayConfig.pin02)
+            output03 = pi4j.digitalOutput<DigitalOutputProvider>().create(displayConfig.pin03)
+            output04 = pi4j.digitalOutput<DigitalOutputProvider>().create(displayConfig.pin04)
+            output05 = pi4j.digitalOutput<DigitalOutputProvider>().create(displayConfig.pin05)
+            output06 = pi4j.digitalOutput<DigitalOutputProvider>().create(displayConfig.pin06)
+            output07 = pi4j.digitalOutput<DigitalOutputProvider>().create(displayConfig.pin07)
+            output08 = pi4j.digitalOutput<DigitalOutputProvider>().create(displayConfig.pin08)
+            output09 = pi4j.digitalOutput<DigitalOutputProvider>().create(displayConfig.pin09)
+            output10 = pi4j.digitalOutput<DigitalOutputProvider>().create(displayConfig.pin10)
+            output11 = pi4j.digitalOutput<DigitalOutputProvider>().create(displayConfig.pin11)
+            output12 = pi4j.digitalOutput<DigitalOutputProvider>().create(displayConfig.pin12)
+
+            name = displayConfig.name
+
+            digitsAddressRegisters = listOf(output12, output09, output08, output06)
+            //Symbol parts starting from left bottom part arranged clockwise (inner center part at the end of registers)
+            symbolsAddressRegisters = listOf(output01, output10, output11, output07, output04, output02, output05)
+            dotDividerAddressRegister = output03
+        } catch (_: Exception) {}
     }
 
-    private fun setTriggerOutput(pi4j: Context, pin: Int) {
-        val params = DigitalOutput.newConfigBuilder(pi4j)
-            .id("BCM$pin")
-            .name("$NAME_HARDWARE_MODEL ($NAME_HARDWARE_VERSION) #$pin")
-            .address(pin)
-            .initial(DigitalState.LOW)
-
-        triggerOutput = pi4j.create(params)
+    private fun activateDigitCursor(digitPosition: Int) {
+        when (digitPosition) {
+            0 -> {
+                output12.high() //First digit
+                output09.low() //Second digit
+                output08.low() //Third digit
+                output06.low() //Fours digit
+            }
+            1 -> {
+                output12.low() //First digit
+                output09.high() //Second digit
+                output08.low() //Third digit
+                output06.low() //Fours digit
+            }
+            2 -> {
+                output12.low() //First digit
+                output09.low() //Second digit
+                output08.high() //Third digit
+                output06.low() //Fours digit
+            }
+            3 -> {
+                output12.low() //First digit
+                output09.low() //Second digit
+                output08.low() //Third digit
+                output06.high() //Fours digit
+            }
+        }
     }
 
-    private fun setEchoInput(pi4j: Context, pin: Int) {
-        val params = DigitalInput.newConfigBuilder(pi4j)
-            .id("BCM$pin")
-            .name("$NAME_HARDWARE_MODEL ($NAME_HARDWARE_VERSION) #$pin")
-            .address(pin)
-            .pull(PullResistance.PULL_DOWN)
-            .build()
+    private fun mapASCItoOutputs(symbol: Char): List<Int> {
+        return when(symbol) {
+            '0', 'o', 'O' -> listOf(0, 0, 0, 0, 0, 0, 1)
+            '1', 'i', 'I' -> listOf(1, 1, 1, 0, 0, 1, 1)
+            '2' -> listOf(0, 1, 0, 0, 1, 0, 0)
+            '3' -> listOf(1, 1, 0, 0, 0, 0, 0)
+            '4' -> listOf(1, 0, 1, 0, 0, 1, 0)
+            '5' -> listOf(1, 0, 0, 1, 0, 0, 0)
+            '6' -> listOf(0, 0, 0, 1, 0, 0, 0)
+            '7' -> listOf(1, 1, 0, 0, 0, 1, 1)
+            '8' -> listOf(0, 0, 0, 0, 0, 0, 0)
+            '9' -> listOf(1, 0, 0, 0, 0, 1, 0)
 
-        echoInput = pi4j.create(params)
+            'l', 'L' -> listOf(0, 0, 1, 1, 1, 0, 1)
+            '_' -> listOf(1, 1, 1, 1, 1, 0, 1)
+            '-' -> listOf(1, 1, 1, 1, 1, 1, 0)
+            ' ' -> listOf(1, 1, 1, 1, 1, 1, 1)
+            else -> listOf(1, 1, 1, 1, 1, 1, 1)
+        }
     }
 
 
-    override fun triggerOutputHigh() {
-        triggerOutput.setState(1)
+    override fun outputPrint(outFloat: Float?, string: String?, printTimeInMillis: Int?): Boolean {
+        var runTileClockMillis = 0
+
+        //detect number divider
+        val pointCursorIfPresent = if (outFloat != null) {
+            if (outFloat.rem(1).toDouble().equals(0.0)) -1 else outFloat.toString().indexOf(".")
+        } else if (!string.isNullOrEmpty()) string.indexOf(".") else -1
+
+        //Prepare incoming data to formatted string
+        var outputCharArray = if (outFloat != null && (outFloat.rem(1).toDouble().equals(0.0)))
+            outFloat.toInt().toString() else outFloat?.toString()
+            ?: if (!string.isNullOrEmpty()) string else ""
+        outputCharArray = outputCharArray.replace(".", "")
+
+        if (outputCharArray.length > 4) outputCharArray = outputCharArray.substring(0, 4)
+
+        threadScope?.cancel()
+
+        threadScope = CoroutineScope(Job() + Dispatchers.IO).launch {
+            while (if (printTimeInMillis == null || printTimeInMillis == 0) true else printTimeInMillis >= runTileClockMillis) {
+                for (i in outputCharArray.indices) {
+                    //to print Digit with correct pulse high voltage frequency delay
+                    val millis = (16 / outputCharArray.length).toLong()
+                    delay(millis)
+                    runTileClockMillis += millis.toInt()
+                    activateDigitCursor(i) //activate digit cursor
+                    mapASCItoOutputs(outputCharArray[i]).forEachIndexed { index, state ->
+                        symbolsAddressRegisters[index].setState(state)
+
+                        //print divider if need
+                        if (pointCursorIfPresent > 0 && pointCursorIfPresent-1 == i)
+                            dotDividerAddressRegister.low() else dotDividerAddressRegister.high()
+                    }
+                }
+            }
+            //Erase all data from display (clear procedure)
+            for (i in 0..3) {
+                activateDigitCursor(i) //activate digit cursor
+                symbolsAddressRegisters.forEach { it.high() }
+                dotDividerAddressRegister.high()
+            }
+        }
+        return true
     }
 
-    override fun triggerOutputLow() {
-        triggerOutput.setState(0)
-    }
-
-    companion object {
-        const val NAME_HARDWARE_MODEL = "HC-SR04"
-        const val NAME_HARDWARE_VERSION = "2021"
-    }
 }
 ````
 
@@ -200,6 +317,7 @@ data class BodyCircuitBoard(
     val buttons: MutableList<Button> = mutableListOf(),
     val buzzers: MutableList<Buzzer> = mutableListOf(),
     val distanceSensors: MutableList<DistanceSensor> = mutableListOf(),
+    val displays: MutableList<Display> = mutableListOf(),
     //TODO: Add hardware parts if need
 
 ): BodyPrototype()
@@ -227,6 +345,8 @@ interface CircuitBoard: Body {
     fun stopDistanceMeasuring(sensorPosition: Int = 0): Boolean
 
     fun getDistanceMeasuringState(sensorPosition: Int = 0): Boolean
+    
+    fun displayPrint(displayPosition: Int = 0, outFloat: Float? = null, string: String? = null, printTimeInMillis: Int? = 0): Boolean
 
 }
 ````
@@ -236,12 +356,12 @@ interface CircuitBoard: Body {
 
         //PARSE CONFIG
 
-        /** init Sensors */
-        configuration.distanceSensors?.forEach {
-            if (it?.pinTrigger != null && it.pinEcho != null) {
-                when (DistanceSensor.isConfigurationValid(it)) {
-                    DistanceSensor.NAME_HARDWARE_MODEL_HC_SR_04 ->
-                        body.distanceSensors.add(DistanceSensorHcSr04v2021(pi4J, it))
+        /** init displays */
+        configuration.displays?.forEach {
+            if (it?.pin01 != null && it?.pin02 != null) {
+                when (Display.isConfigurationValid(it)) {
+                    Display.NAME_HARDWARE_MODEL_3461BS_1 ->
+                        body.displays.add(Display3461BS1(pi4J, it))
                 }
             }
         }
@@ -249,86 +369,64 @@ interface CircuitBoard: Body {
     
     ////////////////
     
-       override fun startDistanceMeasuring(sensorPosition: Int, periodInMillis: Long): Boolean {
-        if (sensorPosition >= body.distanceSensors.size) return false
-        body.distanceSensors[sensorPosition].isActive = true
+      override fun displayPrint(displayPosition: Int, outFloat: Float?, string: String?, printTimeInMillis: Int?): Boolean {
+        if (displayPosition < 0) return false
 
-        body.distanceSensors[sensorPosition].threadScopeSensorRequest?.cancel()
-        body.distanceSensors[sensorPosition].threadScopeSensorRequest = CoroutineScope(Job() + Dispatchers.IO).launch {
-            /** Loop cycle while sensor is active */
-            while (body.distanceSensors[sensorPosition].isActive) {
-                body.distanceSensors[sensorPosition].triggerOutputHigh()
-                TimeUnit.MICROSECONDS.sleep(10)
-                body.distanceSensors[sensorPosition].triggerOutputLow()
-
-                while (body.distanceSensors[sensorPosition].echoInput.isLow) {}
-                val echoLowNanoTime = System.nanoTime()
-                while (body.distanceSensors[sensorPosition].echoInput.isHigh) {}
-                val echoHighNanoTime = System.nanoTime()
-
-                DistanceEmitters.emitDistanceData(
-                    Distance(
-                        sensorPosition = sensorPosition,
-                        echoHighNanoTime = echoHighNanoTime,
-                        echoLowNanoTime = echoLowNanoTime
-                    )
-                )
-
-                delay(periodInMillis)
-            }
+        if (displayPosition < body.displays.size) {
+            return body.displays[displayPosition].outputPrint(outFloat, string, printTimeInMillis)
         }
-        return true
-    }
-
-    override fun stopDistanceMeasuring(sensorPosition: Int): Boolean {
-        body.distanceSensors[sensorPosition].isActive = false
-        return true
-    }
-
-    override fun getDistanceMeasuringState(sensorPosition: Int): Boolean {
-        return if (sensorPosition < body.distanceSensors.size) {
-            body.distanceSensors[sensorPosition].isActive
-        } else {
-            false
-        }
+        return false
     }
     
     
 ````
 
-#### Step 5: Main thread logic. Start distance sensor measuring and trigger received data events
+#### Step 5: Main thread logic. Set initial display print out data as "_LO_" then print the temperature from API response
 
 ````
-    val jobDistanceCollector = CoroutineScope(Job() + Dispatchers.IO).launch {
-        DistanceEmitters.distanceSensor.collect { distance ->
-            if (distance.toCm(DistanceSensor.NAME_HARDWARE_MODEL_HC_SR_04) == Float.POSITIVE_INFINITY) {
-                println("Distance is out of measuring")
-            } else {
-                println("Distance = ${distance.toCm()} cm")
-            }
-        }
-    }
-    
-        if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
 
-        (avatar.body as CircuitBoard).addButtonListeners(
-            buttonPosition = 0,
-            actionHigh = {
-                (avatar.body as CircuitBoard).buzzerSoundOn(0)
-                         },
-            actionLow = {
-                (avatar.body as CircuitBoard).buzzerSoundOff(0)
-                weatherNetworkService.getWeatherByName("toronto")
-                if (!(avatar.body as CircuitBoard).getDistanceMeasuringState()) {
-                    (avatar.body as CircuitBoard).startDistanceMeasuring(periodInMillis = 1000)
-                } else {
-                    (avatar.body as CircuitBoard).stopDistanceMeasuring()
+   (avatar.body as CircuitBoard).displayPrint(string = "_LO_",)    
+    
+   fun collectData() {
+
+    val jobWeatherCollector = CoroutineScope(Job() + Dispatchers.IO).launch {
+        NetworkEmitters.weatherEmitter.collect { weather ->
+            if (weather.isSuccessful && weather.weatherResponse != null) {
+                println(weather)
+                val temp = weather.weatherResponse.main?.temp?.toInt()
+                (avatar.body as CircuitBoard).displayPrint(string = temp.toString())
+
+                CoroutineScope(Dispatchers.IO).launch {
+                    //if temp = 0 -> blink 2 leds once
+                    if (temp != null && temp == 0) {
+                        (avatar.body as CircuitBoard).ledOn(0, 1000L)
+                        (avatar.body as CircuitBoard).ledOn(1, 1000L)
+                    } else if (temp != null && temp > 0) {
+                        //if temp > 0 -> blink green led $temp times
+                        for (i in 1..temp) {
+                            (avatar.body as CircuitBoard).ledOn(0, 1000L)
+                            delay(2000)
+                        }
+                    } else if (temp != null && temp < 0) {
+                        //if temp > 0 -> blink green led $temp times
+                        for (i in 1..abs(temp)) {
+                            (avatar.body as CircuitBoard).ledOn(1, 1000L)
+                            delay(2000)
+                        }
+                    }
+
+                    (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
+                    delay(600)
+                    (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
+                    delay(600)
+                    (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
+
                 }
-
-
             }
-        )
+
+        }
     }
+}
 ````
 
 #### * Additional settings: remote compiling / debugging setup

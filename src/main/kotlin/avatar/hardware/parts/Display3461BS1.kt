@@ -136,6 +136,7 @@ class Display3461BS1(pi4j: Context, displayConfig: Configuration.DisplayConfig):
                     //to print Digit with correct pulse high voltage frequency delay
                     val millis = (16 / outputCharArray.length).toLong()
                     delay(millis)
+                    runTileClockMillis += millis.toInt()
                     activateDigitCursor(i) //activate digit cursor
                     mapASCItoOutputs(outputCharArray[i]).forEachIndexed { index, state ->
                         symbolsAddressRegisters[index].setState(state)
@@ -145,6 +146,12 @@ class Display3461BS1(pi4j: Context, displayConfig: Configuration.DisplayConfig):
                             dotDividerAddressRegister.low() else dotDividerAddressRegister.high()
                     }
                 }
+            }
+            //Erase all data from display (clear procedure)
+            for (i in 0..3) {
+                activateDigitCursor(i) //activate digit cursor
+                symbolsAddressRegisters.forEach { it.high() }
+                dotDividerAddressRegister.high()
             }
         }
         return true

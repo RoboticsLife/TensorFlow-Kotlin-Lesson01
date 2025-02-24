@@ -43,7 +43,7 @@ suspend fun main() {
 
     if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
 
-        (avatar.body as CircuitBoard).displayPrint(string = "_LO_")
+        (avatar.body as CircuitBoard).displayPrint(string = "_LO_",)
 
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,
