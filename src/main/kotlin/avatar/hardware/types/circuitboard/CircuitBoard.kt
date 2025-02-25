@@ -24,4 +24,6 @@ interface CircuitBoard: Body {
 
     fun displayPrint(displayPosition: Int = 0, outFloat: Float? = null, string: String? = null, printTimeInMillis: Int? = 0): Boolean
 
+    fun rotateToAngle(servoPosition: Int = 0, angle: Int, speed: Float = 1f): Boolean
+
 }

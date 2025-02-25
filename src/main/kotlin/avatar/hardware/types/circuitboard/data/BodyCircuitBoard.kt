@@ -11,6 +11,7 @@ data class BodyCircuitBoard(
     val buzzers: MutableList<Buzzer> = mutableListOf(),
     val distanceSensors: MutableList<DistanceSensor> = mutableListOf(),
     val displays: MutableList<Display> = mutableListOf(),
+    val servos: MutableList<Servo> = mutableListOf(),
     //TODO: Add hardware parts if need
 
 ): BodyPrototype()

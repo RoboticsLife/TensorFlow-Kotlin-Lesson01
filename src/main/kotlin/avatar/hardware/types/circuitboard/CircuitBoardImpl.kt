@@ -63,6 +63,16 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
             }
         }
 
+        /** init Sensors */
+        configuration.servos?.forEach {
+            if (it?.pin != null) {
+                when (Servo.isConfigurationValid(it)) {
+                    Servo.NAME_HARDWARE_MODEL_SG90 ->
+                        body.servos.add(ServoSG90(pi4J, it))
+                }
+            }
+        }
+
     }
 
 
@@ -182,6 +192,15 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
 
         if (displayPosition < body.displays.size) {
             return body.displays[displayPosition].outputPrint(outFloat, string, printTimeInMillis)
+        }
+        return false
+    }
+
+    override fun rotateToAngle(servoPosition: Int, angle: Int, speed: Float): Boolean {
+        if (servoPosition < 0) return false
+
+        if (servoPosition < body.servos.size) {
+            return  body.servos[servoPosition].rotateToAngle(angle, speed)
         }
         return false
     }

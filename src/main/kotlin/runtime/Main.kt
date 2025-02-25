@@ -43,7 +43,10 @@ suspend fun main() {
 
     if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
 
-        (avatar.body as CircuitBoard).displayPrint(string = "_LO_",)
+//        (avatar.body as CircuitBoard).displayPrint(string = "_LO_",)
+
+        //TODO tests
+        (avatar.body as CircuitBoard).rotateToAngle(0, 20, 1f)
 
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,
@@ -71,7 +74,7 @@ suspend fun main() {
 fun init() {
     pi4j = Injector.getPi4j()
     console = Injector.getPi4jConsole()
-    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson09-4digits-display.json")
+    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson10-servo-motor.json")
     avatar = AvatarBuilder(pi4j, configuration).build()
 }
 
