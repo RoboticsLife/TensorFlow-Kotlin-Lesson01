@@ -5,7 +5,7 @@
 
 
 
-## LESSON 09: 4-Digits Display 3461BS-1 
+## LESSON 10: Servo Motor SG90. Actuator controlling.
 
 
 #### Step 1: Add 3461BS-1  4-Digits Display type of device's part to Json configuration

@@ -18,7 +18,7 @@ import kotlin.math.abs
 
 
 /**
- * LESSON 09: 4-Digits Display 3461BS-1
+ * LESSON 10: Servo Motor SG90. Actuator controlling.
  * GPIO-Kotlin-Pi4j project.
  * Kotlin Gpio project. Working with IO lines on Raspberry Pi using Pi4J Kotlin/Java langs and remote
  * compiling / debugging to any ARM GPIO compatible hardware. Advanced AI features (TensorFlow)
