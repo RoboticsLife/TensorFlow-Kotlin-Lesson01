@@ -214,11 +214,11 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
         return Float.POSITIVE_INFINITY
     }
 
-    override fun actuatorServoMoveToAngle(servoPosition: Int, angle: Float): Boolean {
+    override fun actuatorServoMoveToAngle(servoPosition: Int, angle: Float, customMovingTimeInMillis: Int?): Boolean {
         if (servoPosition < 0) return false
 
         if (servoPosition < body.servos.size) {
-            return  body.servos[servoPosition].actuatorServoMoveToAngle(angle)
+            return  body.servos[servoPosition].actuatorServoMoveToAngle(angle, customMovingTimeInMillis)
         }
         return false
     }

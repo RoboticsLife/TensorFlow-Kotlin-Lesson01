@@ -8,7 +8,7 @@ interface Servo {
 
     fun actuatorServoGetAngleRangeLimit(): Float
 
-    fun actuatorServoMoveToAngle(angle: Float = 0f): Boolean
+    fun actuatorServoMoveToAngle(angle: Float = 0f, customMovingTimeInMillis: Int? = 0): Boolean
 
 
 

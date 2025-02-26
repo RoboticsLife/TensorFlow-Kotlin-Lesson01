@@ -10,6 +10,7 @@ class ServoSG90(pi4j: Context, servoConfig: Configuration.ServoConfig): Servo {
 
     lateinit var pwm: Pwm
     private var threadScope: Job? = null
+    private var customTimeMoveThreadScope: Job? = null
     private var currentPositionInDegrees: Float = 0f
 
     init {
@@ -35,6 +36,26 @@ class ServoSG90(pi4j: Context, servoConfig: Configuration.ServoConfig): Servo {
         actuatorServoMoveToAngle(angle = 0f)
     }
 
+    private fun moveToAngleForCustomTime(angle: Float, customMovingTimeInMillis: Int) {
+        if (customMovingTimeInMillis == 0) return
+        val filteredAngle =
+            if (angle > DEFAULT_MAX_ANGLE) DEFAULT_MAX_ANGLE else if (angle < DEFAULT_MIN_ANGLE) DEFAULT_MIN_ANGLE else angle
+
+        val angleMovementRange = currentPositionInDegrees - filteredAngle
+        val range = if (filteredAngle % 1 > 0) angleMovementRange.toInt() + 1 else angleMovementRange.toInt()
+
+        customTimeMoveThreadScope?.cancel()
+        customTimeMoveThreadScope = CoroutineScope(Job() + Dispatchers.IO).launch {
+            for (i in 1..range) {
+                delay((customMovingTimeInMillis / range).toLong())
+                val angleStep = if (i < range) i.toFloat() else angleMovementRange - range.toFloat() - (if (filteredAngle % 1 > 0) 1.0f else 0.0f)
+                actuatorServoMoveToAngle(
+                    angle = if (currentPositionInDegrees < filteredAngle) currentPositionInDegrees + angleStep else currentPositionInDegrees - angleStep
+                )
+            }
+        }
+    }
+
 
     override fun actuatorServoGetCurrentAngle(): Float {
         return currentPositionInDegrees
@@ -44,19 +65,23 @@ class ServoSG90(pi4j: Context, servoConfig: Configuration.ServoConfig): Servo {
         return DEFAULT_ANGLE_RANGE
     }
 
-    override fun actuatorServoMoveToAngle(angle: Float): Boolean {
-        val filteredAngle =
-            if (angle > DEFAULT_MAX_ANGLE) DEFAULT_MAX_ANGLE else if (angle < DEFAULT_MIN_ANGLE) DEFAULT_MIN_ANGLE else angle
+    override fun actuatorServoMoveToAngle(angle: Float, customMovingTimeInMillis: Int?): Boolean {
+        if (customMovingTimeInMillis != null &&customMovingTimeInMillis > 0) {
+            moveToAngleForCustomTime(angle, customMovingTimeInMillis)
+        } else {
+            val filteredAngle =
+                if (angle > DEFAULT_MAX_ANGLE) DEFAULT_MAX_ANGLE else if (angle < DEFAULT_MIN_ANGLE) DEFAULT_MIN_ANGLE else angle
 
-
-        threadScope?.cancel()
-        threadScope = CoroutineScope(Job() + Dispatchers.IO).launch {
-            currentPositionInDegrees = filteredAngle
-            val dutyCycleByOnDegree = (DEFAULT_MAX_DUTY_CYCLE - DEFAULT_MIN_DUTY_CYCLE) / DEFAULT_ANGLE_RANGE
-            pwm.on(DEFAULT_START_POSITION_DUTY_CYCLE + filteredAngle * dutyCycleByOnDegree)
-            delay(20)
+            threadScope?.cancel()
+            threadScope = CoroutineScope(Job() + Dispatchers.IO).launch {
+                currentPositionInDegrees = filteredAngle
+                val dutyCycleByOnDegree = (DEFAULT_MAX_DUTY_CYCLE - DEFAULT_MIN_DUTY_CYCLE) / DEFAULT_ANGLE_RANGE
+                pwm.on(DEFAULT_START_POSITION_DUTY_CYCLE + filteredAngle * dutyCycleByOnDegree)
+                delay(20)
+            }
+            return true
         }
-        return true
+        return false
     }
 
     companion object {

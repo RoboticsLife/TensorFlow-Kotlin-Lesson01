@@ -28,6 +28,6 @@ interface CircuitBoard: Body {
 
     fun actuatorServoGetAngleRangeLimit(servoPosition: Int = 0): Float
 
-    fun actuatorServoMoveToAngle(servoPosition: Int = 0, angle: Float = 0f): Boolean
+    fun actuatorServoMoveToAngle(servoPosition: Int = 0, angle: Float = 0f, customMovingTimeInMillis: Int? = 0): Boolean
 
 }

@@ -45,23 +45,11 @@ suspend fun main() {
 
         (avatar.body as CircuitBoard).displayPrint(string = "_LO_",)
 
-        //TODO tests
+        //Servo motor movements
         delay(2000)
-       // (avatar.body as CircuitBoard).rotateToAngle(0, -90f)
-       // delay(2000)
-      //  (avatar.body as CircuitBoard).rotateToAngle(0, 90f)
+        (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, -90f)
         delay(2000)
-      //  (avatar.body as CircuitBoard).rotateToAngle(0, -45f)
-        delay(2000)
-     //   (avatar.body as CircuitBoard).rotateToAngle(0, 45f)
-
-        //TODO it works!!! Slow smooth movement
-        for (i in -90..-20) {
-            delay(50)
-            (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, i.toFloat())
-        }
-        println((avatar.body as CircuitBoard).actuatorServoGetCurrentAngle())
-        println((avatar.body as CircuitBoard).actuatorServoGetAngleRangeLimit())
+        (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, 90f, 4000)
 
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,
@@ -77,14 +65,10 @@ suspend fun main() {
                     (avatar.body as CircuitBoard).stopDistanceMeasuring()
                 }
 
-
             }
         )
     }
-
-
 }
-
 
 fun init() {
     pi4j = Injector.getPi4j()
