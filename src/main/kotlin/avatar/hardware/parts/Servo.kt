@@ -4,7 +4,13 @@ import brain.data.Configuration
 
 interface Servo {
 
-    fun rotateToAngle(angle: Int, speed: Float = 1f): Boolean
+    fun actuatorServoGetCurrentAngle(): Float
+
+    fun actuatorServoGetAngleRangeLimit(): Float
+
+    fun actuatorServoMoveToAngle(angle: Float = 0f): Boolean
+
+
 
     companion object {
         const val NAME_HARDWARE_MODEL_SG90 = "SG90"

@@ -43,10 +43,25 @@ suspend fun main() {
 
     if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
 
-//        (avatar.body as CircuitBoard).displayPrint(string = "_LO_",)
+        (avatar.body as CircuitBoard).displayPrint(string = "_LO_",)
 
         //TODO tests
-        (avatar.body as CircuitBoard).rotateToAngle(0, 20, 1f)
+        delay(2000)
+       // (avatar.body as CircuitBoard).rotateToAngle(0, -90f)
+       // delay(2000)
+      //  (avatar.body as CircuitBoard).rotateToAngle(0, 90f)
+        delay(2000)
+      //  (avatar.body as CircuitBoard).rotateToAngle(0, -45f)
+        delay(2000)
+     //   (avatar.body as CircuitBoard).rotateToAngle(0, 45f)
+
+        //TODO it works!!! Slow smooth movement
+        for (i in -90..-20) {
+            delay(50)
+            (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, i.toFloat())
+        }
+        println((avatar.body as CircuitBoard).actuatorServoGetCurrentAngle())
+        println((avatar.body as CircuitBoard).actuatorServoGetAngleRangeLimit())
 
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,

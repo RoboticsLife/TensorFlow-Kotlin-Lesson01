@@ -196,11 +196,29 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
         return false
     }
 
-    override fun rotateToAngle(servoPosition: Int, angle: Int, speed: Float): Boolean {
+    override fun actuatorServoGetCurrentAngle(servoPosition: Int): Float {
+        if (servoPosition < 0) return Float.POSITIVE_INFINITY
+
+        if (servoPosition < body.servos.size) {
+            return  body.servos[servoPosition].actuatorServoGetCurrentAngle()
+        }
+        return Float.POSITIVE_INFINITY
+    }
+
+    override fun actuatorServoGetAngleRangeLimit(servoPosition: Int): Float {
+        if (servoPosition < 0) return Float.POSITIVE_INFINITY
+
+        if (servoPosition < body.servos.size) {
+            return  body.servos[servoPosition].actuatorServoGetAngleRangeLimit()
+        }
+        return Float.POSITIVE_INFINITY
+    }
+
+    override fun actuatorServoMoveToAngle(servoPosition: Int, angle: Float): Boolean {
         if (servoPosition < 0) return false
 
         if (servoPosition < body.servos.size) {
-            return  body.servos[servoPosition].rotateToAngle(angle, speed)
+            return  body.servos[servoPosition].actuatorServoMoveToAngle(angle)
         }
         return false
     }
