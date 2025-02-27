@@ -5,6 +5,7 @@ import com.pi4j.context.Context
 import com.pi4j.io.pwm.Pwm
 import com.pi4j.io.pwm.PwmType
 import kotlinx.coroutines.*
+import kotlin.math.abs
 
 class ServoSG90(pi4j: Context, servoConfig: Configuration.ServoConfig): Servo {
 
@@ -42,15 +43,13 @@ class ServoSG90(pi4j: Context, servoConfig: Configuration.ServoConfig): Servo {
             if (angle > DEFAULT_MAX_ANGLE) DEFAULT_MAX_ANGLE else if (angle < DEFAULT_MIN_ANGLE) DEFAULT_MIN_ANGLE else angle
 
         val angleMovementRange = currentPositionInDegrees - filteredAngle
-        val range = if (filteredAngle % 1 > 0) angleMovementRange.toInt() + 1 else angleMovementRange.toInt()
-
+        val range = abs(if (filteredAngle % 1 > 0) angleMovementRange.toInt() + 1 else angleMovementRange.toInt())
         customTimeMoveThreadScope?.cancel()
         customTimeMoveThreadScope = CoroutineScope(Job() + Dispatchers.IO).launch {
             for (i in 1..range) {
                 delay((customMovingTimeInMillis / range).toLong())
-                val angleStep = if (i < range) i.toFloat() else angleMovementRange - range.toFloat() - (if (filteredAngle % 1 > 0) 1.0f else 0.0f)
                 actuatorServoMoveToAngle(
-                    angle = if (currentPositionInDegrees < filteredAngle) currentPositionInDegrees + angleStep else currentPositionInDegrees - angleStep
+                    angle = if (currentPositionInDegrees < filteredAngle) currentPositionInDegrees + 1.0f else currentPositionInDegrees - 1.0f
                 )
             }
         }
@@ -66,7 +65,7 @@ class ServoSG90(pi4j: Context, servoConfig: Configuration.ServoConfig): Servo {
     }
 
     override fun actuatorServoMoveToAngle(angle: Float, customMovingTimeInMillis: Int?): Boolean {
-        if (customMovingTimeInMillis != null &&customMovingTimeInMillis > 0) {
+        if (customMovingTimeInMillis != null && customMovingTimeInMillis > 0) {
             moveToAngleForCustomTime(angle, customMovingTimeInMillis)
         } else {
             val filteredAngle =
