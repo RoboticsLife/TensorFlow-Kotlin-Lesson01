@@ -49,7 +49,7 @@ suspend fun main() {
         delay(2000)
         (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, 90f)
         delay(2000)
-        (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, -45f, 4000)
+        (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, -90f, 4000)
 
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,

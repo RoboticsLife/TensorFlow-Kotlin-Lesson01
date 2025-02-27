@@ -63,7 +63,7 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
             }
         }
 
-        /** init Sensors */
+        /** init Servos */
         configuration.servos?.forEach {
             if (it?.pin != null) {
                 when (Servo.isConfigurationValid(it)) {
