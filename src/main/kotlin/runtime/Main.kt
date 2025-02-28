@@ -49,15 +49,15 @@ suspend fun main() {
         delay(2000)
         (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, 90f)
         delay(2000)
-        (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, -90f, 4000)
+
 
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,
             actionHigh = {
-                (avatar.body as CircuitBoard).buzzerSoundOn(0)
+                (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, -90f, 3000)
                          },
             actionLow = {
-                (avatar.body as CircuitBoard).buzzerSoundOff(0)
+                (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, 90f, 3000)
                 weatherNetworkService.getWeatherByName("toronto")
                 if (!(avatar.body as CircuitBoard).getDistanceMeasuringState()) {
                     (avatar.body as CircuitBoard).startDistanceMeasuring(periodInMillis = 1000)
