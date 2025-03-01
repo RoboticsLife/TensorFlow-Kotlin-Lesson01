@@ -55,10 +55,12 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
 
         /** init displays */
         configuration.displays?.forEach {
-            if (it?.pin01 != null && it?.pin02 != null) {
+            if (it?.hardwareModel != null) {
                 when (Display.isConfigurationValid(it)) {
                     Display.NAME_HARDWARE_MODEL_3461BS_1 ->
                         body.displays.add(Display3461BS1(pi4J, it))
+                    Display.NAME_HARDWARE_MODEL_LCD_1602 ->
+                        body.displays.add(DisplayLCD1602(pi4J, it))
                 }
             }
         }

@@ -36,11 +36,12 @@
   ],
   "displays": [
     {
-      "name": "i2c",
-      "hardwareModel": "i2c",
-      "hardwareVersion": "",
-      "pin01": 1,
-      "pin02": 2
+      "name": "LCD 1602 Display connected to I2C bus",
+      "hardwareModel": "LCD1602",
+      "hardwareVersion": "i2c",
+      "connectionType": "i2c",
+      "pinSDA": 2,
+      "pinSCL": 3
     }
   ]
 }

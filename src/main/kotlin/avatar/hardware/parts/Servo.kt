@@ -1,6 +1,7 @@
 package avatar.hardware.parts
 
 import brain.data.Configuration
+import brain.utils.filteredHardwareModel
 
 interface Servo {
 
@@ -18,15 +19,10 @@ interface Servo {
 
         fun isConfigurationValid(servoConfig: Configuration.ServoConfig): String {
 
-            if (servoConfig.hardwareModel
-                    ?.filterNot { it == ' ' || it == '-' || it == '_' || it == ',' || it == '.' }?.lowercase()
-                    ?.contains(NAME_HARDWARE_MODEL_SG90.filterNot { it == ' ' || it == '-' || it == '_' || it == ',' || it == '.' }
-                        .lowercase()) == true) {
-                return NAME_HARDWARE_MODEL_SG90
-            } else if (false) {
-                //TODO add other types implementations
-                return ""
-            } else return ""
+            return if (servoConfig.hardwareModel?.filteredHardwareModel()
+                    ?.contains(NAME_HARDWARE_MODEL_SG90.filteredHardwareModel()) == true) {
+                NAME_HARDWARE_MODEL_SG90
+            } else ""
         }
     }
 }

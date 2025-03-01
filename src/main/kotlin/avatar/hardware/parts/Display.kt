@@ -1,6 +1,7 @@
 package avatar.hardware.parts
 
 import brain.data.Configuration
+import brain.utils.filteredHardwareModel
 
 interface Display {
 
@@ -8,20 +9,19 @@ interface Display {
 
     companion object {
         const val NAME_HARDWARE_MODEL_3461BS_1 = "3461BS-1"
-
+        const val NAME_HARDWARE_MODEL_LCD_1602 = "LCD1602"
 
         fun isConfigurationValid(displayConfig: Configuration.DisplayConfig): String {
 
-            if (displayConfig.hardwareModel
-                    ?.filterNot { it == ' ' || it == '-' || it == '_' || it == ',' || it == '.' }?.lowercase()
-                    ?.contains(NAME_HARDWARE_MODEL_3461BS_1.filterNot { it == ' ' || it == '-' || it == '_' || it == ',' || it == '.' }
-                        .lowercase()) == true) {
-                return NAME_HARDWARE_MODEL_3461BS_1
-            } else if (false) {
-                //TODO add other types implementations
-                return ""
-            } else return ""
+            return if (displayConfig.hardwareModel?.filteredHardwareModel()
+                    ?.contains(NAME_HARDWARE_MODEL_3461BS_1.filteredHardwareModel()) == true) {
+                NAME_HARDWARE_MODEL_3461BS_1
+            } else if (displayConfig.hardwareModel?.filteredHardwareModel()
+                    ?.contains(NAME_HARDWARE_MODEL_LCD_1602.filteredHardwareModel()) == true) {
+                NAME_HARDWARE_MODEL_LCD_1602
+            } else ""
         }
+
     }
 
 
