@@ -5,7 +5,7 @@
 
 
 
-## LESSON 10: Servo Motor SG90. Actuator controlling.
+## LESSON 11: i2c LCD 1602 Display.
 
 
 #### Step 1: Add SG90 Servo motor (Actuator) type of device's part to Json configuration

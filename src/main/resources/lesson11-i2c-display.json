@@ -1,19 +1,19 @@
 {
-  "configName": "lesson03-two-leds",
-  "configDescription": "This is a simple configuration with 2 leds",
+  "configName": "lesson11-i2c-display",
+  "configDescription": "This is a configuration to plug in a I2C LED display",
   "configVersion": "1.0.0",
   "hardwareType": "circuitboard",
-  "hardwareModel": "leds",
+  "hardwareModel": "i2c",
   "hardwareTypeCode": 1,
   "hardwareModelCode": 1,
   "leds": [
     {
       "name": "green-led",
-      "pin": 2
+      "pin": 5
     },
     {
       "name": "red-led",
-      "pin": 3
+      "pin": 26
     }
   ],
   "buttons": [
@@ -21,12 +21,6 @@
       "name": "ControlButton",
       "pin": 21,
       "pullResistance": 0
-    }
-  ],
-  "buzzers": [
-    {
-      "name": "Simple-Buzzer",
-      "pin": 26
     }
   ],
   "distanceSensors": [
@@ -38,6 +32,15 @@
       "pinEcho": 24,
       "installedSensorPosition": 0,
       "movingAngle": 0
+    }
+  ],
+  "displays": [
+    {
+      "name": "i2c",
+      "hardwareModel": "i2c",
+      "hardwareVersion": "",
+      "pin01": 1,
+      "pin02": 2
     }
   ]
 }

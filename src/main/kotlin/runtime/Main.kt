@@ -18,7 +18,7 @@ import kotlin.math.abs
 
 
 /**
- * LESSON 10: Servo Motor SG90. Actuator controlling.
+ * LESSON 11: i2c LCD 1602 Display
  * GPIO-Kotlin-Pi4j project.
  * Kotlin Gpio project. Working with IO lines on Raspberry Pi using Pi4J Kotlin/Java langs and remote
  * compiling / debugging to any ARM GPIO compatible hardware. Advanced AI features (TensorFlow)
@@ -43,21 +43,11 @@ suspend fun main() {
 
     if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
 
-        (avatar.body as CircuitBoard).displayPrint(string = "_LO_",)
-
-        //Servo motor movements
-        delay(2000)
-        (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, 90f)
-        delay(2000)
-
 
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,
-            actionHigh = {
-                (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, -90f, 3000)
-                         },
+            actionHigh = {},
             actionLow = {
-                (avatar.body as CircuitBoard).actuatorServoMoveToAngle(0, 90f, 3000)
                 weatherNetworkService.getWeatherByName("toronto")
                 if (!(avatar.body as CircuitBoard).getDistanceMeasuringState()) {
                     (avatar.body as CircuitBoard).startDistanceMeasuring(periodInMillis = 1000)
@@ -73,7 +63,7 @@ suspend fun main() {
 fun init() {
     pi4j = Injector.getPi4j()
     console = Injector.getPi4jConsole()
-    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson10-servo-motor.json")
+    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson11-i2c-display.json")
     avatar = AvatarBuilder(pi4j, configuration).build()
 }
 
@@ -104,13 +94,6 @@ fun collectData() {
                             delay(2000)
                         }
                     }
-
-                    (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
-                    delay(600)
-                    (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
-                    delay(600)
-                    (avatar.body as CircuitBoard).buzzerSoundOn(0, 300)
-
                 }
             }
 
