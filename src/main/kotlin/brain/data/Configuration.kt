@@ -53,6 +53,7 @@ data class Configuration(
         val name: String?,
         val hardwareModel: String?,
         val hardwareVersion: String?,
+        val connectionType: String?,
         val pin01: Int?,
         val pin02: Int?,
         val pin03: Int?,
@@ -65,6 +66,8 @@ data class Configuration(
         val pin10: Int?,
         val pin11: Int?,
         val pin12: Int?,
+        val pinSDA: Int?,
+        val pinSCL: Int?,
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
