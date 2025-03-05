@@ -40,8 +40,11 @@
       "hardwareModel": "LCD1602",
       "hardwareVersion": "i2c",
       "connectionType": "i2c",
-      "pinSDA": 2,
-      "pinSCL": 3
+      "pinSDA": 1,
+      "pinSCL": 2,
+      "addressHexAsString": "0x27",
+      "resolutionRows": 2,
+      "resolutionColumns": 16
     }
   ]
 }

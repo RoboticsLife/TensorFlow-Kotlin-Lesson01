@@ -1,12 +1,16 @@
 package avatar.hardware.types.circuitboard
 
 import avatar.hardware.parts.*
+import avatar.hardware.parts.basecomponents.Display
+import avatar.hardware.parts.basecomponents.DistanceSensor
+import avatar.hardware.parts.basecomponents.Servo
 import avatar.hardware.types.circuitboard.data.BodyCircuitBoard
 import com.pi4j.context.Context
 import kotlinx.coroutines.*
 import brain.data.Configuration
 import brain.data.Distance
 import brain.emitters.DistanceEmitters
+import runtime.setup.Settings.CONNECTION_TYPE_I2C
 import java.util.concurrent.TimeUnit
 
 class CircuitBoardImpl(private val pi4J: Context, private val configuration: Configuration): CircuitBoard {
@@ -60,6 +64,7 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
                     Display.NAME_HARDWARE_MODEL_3461BS_1 ->
                         body.displays.add(Display3461BS1(pi4J, it))
                     Display.NAME_HARDWARE_MODEL_LCD_1602 ->
+                        if (it.connectionType?.lowercase() == CONNECTION_TYPE_I2C)
                         body.displays.add(DisplayLCD1602(pi4J, it))
                 }
             }

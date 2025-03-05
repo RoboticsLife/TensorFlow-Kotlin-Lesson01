@@ -1,6 +1,6 @@
 package brain.utils
 
-import avatar.hardware.parts.DistanceSensor
+import avatar.hardware.parts.basecomponents.DistanceSensor
 import brain.data.Distance
 import runtime.setup.Settings
 

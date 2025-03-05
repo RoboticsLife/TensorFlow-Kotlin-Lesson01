@@ -3,8 +3,8 @@ package org.example.runtime
 import avatar.Avatar
 import avatar.hardware.AvatarBuilder
 import avatar.hardware.HardwareTypes
-import avatar.hardware.parts.DistanceSensor
-import avatar.hardware.parts.java.LcdDisplay
+import avatar.hardware.parts.DisplayLCD1602
+import avatar.hardware.parts.basecomponents.DistanceSensor
 import avatar.hardware.types.circuitboard.CircuitBoard
 import brain.emitters.NetworkEmitters
 import com.pi4j.context.Context
@@ -44,9 +44,7 @@ suspend fun main() {
 
     if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
 
-        val lcd = LcdDisplay(pi4j, 2, 16)
-
-        lcd.displayLineOfText("Vika, kak dela?", 0)
+        (avatar.body as CircuitBoard).displayPrint(string = "Alik, you're the Best!")
 
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,

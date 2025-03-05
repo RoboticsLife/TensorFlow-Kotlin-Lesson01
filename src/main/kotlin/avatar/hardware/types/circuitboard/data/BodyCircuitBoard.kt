@@ -3,6 +3,9 @@ package avatar.hardware.types.circuitboard.data
 import avatar.body.BodyPrototype
 import avatar.hardware.HardwareTypes
 import avatar.hardware.parts.*
+import avatar.hardware.parts.basecomponents.Display
+import avatar.hardware.parts.basecomponents.DistanceSensor
+import avatar.hardware.parts.basecomponents.Servo
 
 data class BodyCircuitBoard(
     override var type: HardwareTypes.Type = HardwareTypes.Type.CIRCUIT_BOARD,

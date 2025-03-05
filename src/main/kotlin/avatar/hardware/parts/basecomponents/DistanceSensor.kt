@@ -1,4 +1,4 @@
-package avatar.hardware.parts
+package avatar.hardware.parts.basecomponents
 
 import com.pi4j.io.gpio.digital.DigitalInput
 import com.pi4j.io.gpio.digital.DigitalOutput

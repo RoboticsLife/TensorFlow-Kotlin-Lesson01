@@ -1,4 +1,4 @@
-package avatar.hardware.parts
+package avatar.hardware.parts.basecomponents
 
 import brain.data.Configuration
 import brain.utils.filteredHardwareModel

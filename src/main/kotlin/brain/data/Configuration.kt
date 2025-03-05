@@ -68,6 +68,9 @@ data class Configuration(
         val pin12: Int?,
         val pinSDA: Int?,
         val pinSCL: Int?,
+        val addressHexAsString: String?,
+        val resolutionRows: Int?,
+        val resolutionColumns: Int?,
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)

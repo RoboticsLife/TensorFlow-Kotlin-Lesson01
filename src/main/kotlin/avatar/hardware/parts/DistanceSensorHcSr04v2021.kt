@@ -1,5 +1,6 @@
 package avatar.hardware.parts
 
+import avatar.hardware.parts.basecomponents.DistanceSensor
 import com.pi4j.context.Context
 import com.pi4j.io.gpio.digital.DigitalInput
 import com.pi4j.io.gpio.digital.DigitalOutput
@@ -8,7 +9,8 @@ import com.pi4j.io.gpio.digital.PullResistance
 import kotlinx.coroutines.Job
 import brain.data.Configuration
 
-class DistanceSensorHcSr04v2021(pi4j: Context, distanceSensorConfig: Configuration.DistanceSensorConfig): DistanceSensor {
+class DistanceSensorHcSr04v2021(pi4j: Context, distanceSensorConfig: Configuration.DistanceSensorConfig):
+    DistanceSensor {
     override lateinit var triggerOutput: DigitalOutput
     override lateinit var echoInput: DigitalInput
     override var isActive: Boolean = false
