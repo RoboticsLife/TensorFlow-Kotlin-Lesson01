@@ -18,10 +18,6 @@ class DisplayLCD1602(pi4j: Context, displayConfig: Configuration.DisplayConfig):
     private var backlight = false
 
 
-
-
-
-
     override fun outputPrint(outFloat: Float?, string: String?, printTimeInMillis: Int?): Boolean {
         displayText(outFloat?.toString() ?: string.toString())
         return true
@@ -80,7 +76,7 @@ class DisplayLCD1602(pi4j: Context, displayConfig: Configuration.DisplayConfig):
         }
 
         if (line > rows || line < 0) {
-            //TODO error
+            //throw exception || logging
         } else {
             setCursorToPosition(line, 0)
             for (i in 0 until position) {
@@ -149,28 +145,29 @@ class DisplayLCD1602(pi4j: Context, displayConfig: Configuration.DisplayConfig):
     }
 
     fun clearLine(line: Int) {
-        require(!(line > rows || line < 1)) { "Wrong line id. Only $rows lines possible" }
-        displayLine(" ".repeat(columns), LCD_ROW_OFFSETS[line - 1].toInt())
+        if (!(line > rows || line < 1)) {
+            displayLine(" ".repeat(columns), LCD_ROW_OFFSETS[line - 1].toInt())
+        } else {
+            //add exception case || logging
+        }
+
     }
 
     fun setCursorToPosition(line: Int, pos: Int) {
-        require(!(line > rows - 1 || line < 0)) { "Line out of range. Display has only " + rows + "x" + columns + " Characters!" }
-
-        require(!(pos < 0 || pos > columns - 1)) { "Line out of range. Display has only " + rows + "x" + columns + " Characters!" }
-        sendLcdTwoPartsCommand((LCD_SET_DDRAM_ADDR.toInt() or pos + LCD_ROW_OFFSETS[line]).toByte())
+        if (!(line > rows - 1 || line < 0) && !(pos < 0 || pos > columns - 1)) {
+            sendLcdTwoPartsCommand((LCD_SET_DDRAM_ADDR.toInt() or pos + LCD_ROW_OFFSETS[line]).toByte())
+        } else {
+            //add exception case || logging
+        }
     }
 
     fun createCharacter(location: Int, character: ByteArray) {
-        require(character.size == 8) {
-            "Array has invalid length. Character is only 5x8 Digits. Only a array with length" +
-                    " 8 is allowed"
-        }
+        if (character.size == 8 && !(location > 7 || location < 1)) {
+            sendLcdTwoPartsCommand((LCD_SET_CGRAM_ADDR.toInt() or (location shl 3)).toByte())
 
-        require(!(location > 7 || location < 1)) { "Invalid memory location. Range 1-7 allowed. Value: $location" }
-        sendLcdTwoPartsCommand((LCD_SET_CGRAM_ADDR.toInt() or (location shl 3)).toByte())
-
-        for (i in 0..7) {
-            sendLcdTwoPartsCommand(character[i], 1.toByte())
+            for (i in 0..7) {
+                sendLcdTwoPartsCommand(character[i], 1.toByte())
+            }
         }
     }
 
@@ -197,12 +194,6 @@ class DisplayLCD1602(pi4j: Context, displayConfig: Configuration.DisplayConfig):
 
         delay(Duration.ofNanos(50000))
     }
-
-
-
-
-
-
 
     companion object {
         /** Flags for display commands  */
@@ -260,13 +251,3 @@ class DisplayLCD1602(pi4j: Context, displayConfig: Configuration.DisplayConfig):
     }
 
 }
-
-
-
-/**
-    https://github.com/Pi4J/pi4j-example-components/blob/main/src/main/java/com/pi4j/catalog/components/LcdDisplay.java
-    https://docs.sunfounder.com/projects/ultimate-sensor-kit/en/latest/components_basic/21-component_i2c_lcd1602.html
-    https://github.com/Pi4J/pi4j-examples/blob/master/src/main/java/com/pi4j/example/i2c/I2cDeviceExample.java
-    https://pinout.xyz/pinout/i2c#:~:text=I2C%20-%20Inter%20Integrated%20Circuit,a%20pull-up%20might%20interfere.
-    https://learn.adafruit.com/scanning-i2c-addresses/raspberry-pi
- */
