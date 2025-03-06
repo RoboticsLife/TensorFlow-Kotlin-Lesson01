@@ -30,6 +30,7 @@ lateinit var pi4j: Context
 lateinit var console: Console
 lateinit var configuration: Configuration
 lateinit var avatar: Avatar
+var city = "Toronto"
 
 suspend fun main() {
 
@@ -44,13 +45,13 @@ suspend fun main() {
 
     if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
 
-        (avatar.body as CircuitBoard).displayPrint(string = "Alik, you're the Best!")
+        (avatar.body as CircuitBoard).displayPrint(string = "Press the button to get weather forecast")
 
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,
             actionHigh = {},
             actionLow = {
-                weatherNetworkService.getWeatherByName("toronto")
+                weatherNetworkService.getWeatherByName(city)
                 if (!(avatar.body as CircuitBoard).getDistanceMeasuringState()) {
                     (avatar.body as CircuitBoard).startDistanceMeasuring(periodInMillis = 1000)
                 } else {
@@ -76,7 +77,7 @@ fun collectData() {
             if (weather.isSuccessful && weather.weatherResponse != null) {
                 println(weather)
                 val temp = weather.weatherResponse.main?.temp?.toInt()
-                (avatar.body as CircuitBoard).displayPrint(string = temp.toString())
+                (avatar.body as CircuitBoard).displayPrint(string = "The temperature in $city ${temp.toString()} C")
 
                 CoroutineScope(Dispatchers.IO).launch {
                     //if temp = 0 -> blink 2 leds once
