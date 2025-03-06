@@ -471,7 +471,7 @@ class DisplayLCD1602(pi4j: Context, displayConfig: Configuration.DisplayConfig):
 }
 ````
 
-#### Step 4.1: add DisplayConfiguration to I2CDeviceConfiguration fun
+#### Step 3.1: add DisplayConfiguration to I2CDeviceConfiguration fun
 
 ````
 package brain.utils
