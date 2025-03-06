@@ -550,7 +550,7 @@ interface Display {
 ````
      (avatar.body as CircuitBoard).displayPrint(string = "Press the button to get weather forecast")
      
-      (avatar.body as CircuitBoard).displayPrint(string = "The temperature in $city ${temp.toString()} C")
+     (avatar.body as CircuitBoard).displayPrint(string = "The temperature in $city ${temp.toString()} C")
      
 ````
 
