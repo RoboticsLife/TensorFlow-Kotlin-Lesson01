@@ -7,7 +7,7 @@ import com.pi4j.io.gpio.digital.DigitalOutput
 import com.pi4j.io.gpio.digital.DigitalState
 import com.pi4j.io.gpio.digital.PullResistance
 import kotlinx.coroutines.Job
-import brain.data.Configuration
+import brain.data.local.Configuration
 
 class DistanceSensorHcSr04v2021(pi4j: Context, distanceSensorConfig: Configuration.DistanceSensorConfig):
     DistanceSensor {

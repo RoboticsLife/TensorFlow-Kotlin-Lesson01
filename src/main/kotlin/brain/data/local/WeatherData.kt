@@ -1,4 +1,4 @@
-package brain.data
+package brain.data.local
 
 import network.weatherservice.data.WeatherResponse
 

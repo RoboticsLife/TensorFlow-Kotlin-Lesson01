@@ -3,7 +3,7 @@ package avatar.hardware.parts.basecomponents
 import com.pi4j.io.gpio.digital.DigitalInput
 import com.pi4j.io.gpio.digital.DigitalOutput
 import kotlinx.coroutines.Job
-import brain.data.Configuration
+import brain.data.local.Configuration
 import brain.utils.filteredHardwareModel
 
 interface DistanceSensor {

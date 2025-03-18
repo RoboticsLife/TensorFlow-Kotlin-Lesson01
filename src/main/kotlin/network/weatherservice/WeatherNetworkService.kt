@@ -1,6 +1,6 @@
 package network.weatherservice
 
-import brain.data.WeatherData
+import brain.data.local.WeatherData
 import brain.emitters.NetworkEmitters
 import network.InternetConnection
 import runtime.setup.Settings

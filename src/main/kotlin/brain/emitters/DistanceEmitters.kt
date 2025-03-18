@@ -1,6 +1,6 @@
 package brain.emitters
 
-import brain.data.Distance
+import brain.data.local.Distance
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow

@@ -1,6 +1,6 @@
 package avatar.hardware.parts.basecomponents
 
-import brain.data.Configuration
+import brain.data.local.Configuration
 import brain.utils.filteredHardwareModel
 
 interface Servo {

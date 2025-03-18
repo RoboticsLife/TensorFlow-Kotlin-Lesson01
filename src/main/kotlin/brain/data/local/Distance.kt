@@ -1,4 +1,4 @@
-package brain.data
+package brain.data.local
 
 data class Distance(
     val sensorPosition: Int,

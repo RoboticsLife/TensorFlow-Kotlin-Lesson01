@@ -2,7 +2,7 @@ package avatar.hardware.parts
 
 import avatar.hardware.parts.basecomponents.Display
 import avatar.hardware.parts.basecomponents.I2CDevice
-import brain.data.Configuration
+import brain.data.local.Configuration
 import brain.utils.toI2CDeviceConfiguration
 import com.pi4j.context.Context
 import com.pi4j.io.i2c.I2C

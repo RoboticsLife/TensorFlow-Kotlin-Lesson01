@@ -50,7 +50,7 @@ i2cdetect -y 1
 ````
 
 ````
-package brain.data
+package brain.data.local
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
@@ -142,7 +142,7 @@ data class Configuration(
 package avatar.hardware.parts.basecomponents
 
 
-import brain.data.I2CDeviceConfiguration
+import brain.data.local.I2CDeviceConfiguration
 import com.pi4j.context.Context
 import com.pi4j.io.i2c.I2C
 import java.time.Duration
@@ -203,7 +203,7 @@ abstract class I2CDevice(pi4j: Context, i2CDeviceConfiguration: I2CDeviceConfigu
 ````
 
 ````
-package brain.data
+package brain.data.local
 
 data class I2CDeviceConfiguration(
     val name: String?,
@@ -220,7 +220,7 @@ package avatar.hardware.parts
 
 import avatar.hardware.parts.basecomponents.Display
 import avatar.hardware.parts.basecomponents.I2CDevice
-import brain.data.Configuration
+import brain.data.local.Configuration
 import brain.utils.toI2CDeviceConfiguration
 import com.pi4j.context.Context
 import com.pi4j.io.i2c.I2C
@@ -476,8 +476,8 @@ class DisplayLCD1602(pi4j: Context, displayConfig: Configuration.DisplayConfig):
 ````
 package brain.utils
 
-import brain.data.Configuration
-import brain.data.I2CDeviceConfiguration
+import brain.data.local.Configuration
+import brain.data.local.I2CDeviceConfiguration
 import runtime.setup.Settings.DEFAULT_SCL_PIN
 import runtime.setup.Settings.DEFAULT_SDA_PIN
 
@@ -498,7 +498,7 @@ fun Configuration.DisplayConfig.toI2CDeviceConfiguration() = I2CDeviceConfigurat
 ````
 package avatar.hardware.parts.basecomponents
 
-import brain.data.Configuration
+import brain.data.local.Configuration
 import brain.utils.filteredHardwareModel
 
 interface Display {

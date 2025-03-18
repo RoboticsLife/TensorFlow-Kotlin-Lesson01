@@ -4,7 +4,7 @@ import com.pi4j.context.Context
 import com.pi4j.io.gpio.digital.DigitalOutput
 import com.pi4j.io.gpio.digital.DigitalOutputProvider
 import kotlinx.coroutines.Job
-import brain.data.Configuration
+import brain.data.local.Configuration
 
 class Buzzer(pi4j: Context, buzzerConfig: Configuration.BuzzerConfig) {
 

@@ -1,7 +1,7 @@
 package avatar.hardware.parts
 
 import avatar.hardware.parts.basecomponents.Servo
-import brain.data.Configuration
+import brain.data.local.Configuration
 import com.pi4j.context.Context
 import com.pi4j.io.pwm.Pwm
 import com.pi4j.io.pwm.PwmType

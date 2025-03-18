@@ -1,7 +1,7 @@
 package brain.utils
 
-import brain.data.Configuration
-import brain.data.I2CDeviceConfiguration
+import brain.data.local.Configuration
+import brain.data.local.I2CDeviceConfiguration
 import runtime.setup.Settings.DEFAULT_SCL_PIN
 import runtime.setup.Settings.DEFAULT_SDA_PIN
 

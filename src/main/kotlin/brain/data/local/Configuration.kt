@@ -1,4 +1,4 @@
-package brain.data
+package brain.data.local
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 

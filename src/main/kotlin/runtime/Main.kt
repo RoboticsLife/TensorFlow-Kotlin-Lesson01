@@ -3,17 +3,19 @@ package org.example.runtime
 import avatar.Avatar
 import avatar.hardware.AvatarBuilder
 import avatar.hardware.HardwareTypes
-import avatar.hardware.parts.DisplayLCD1602
 import avatar.hardware.parts.basecomponents.DistanceSensor
 import avatar.hardware.types.circuitboard.CircuitBoard
+import brain.Brain
+import brain.BrainBuilder
 import brain.emitters.NetworkEmitters
 import com.pi4j.context.Context
 import com.pi4j.util.Console
 import kotlinx.coroutines.*
 import network.weatherservice.WeatherNetworkService
-import brain.data.Configuration
+import brain.data.local.Configuration
 import brain.emitters.DistanceEmitters
 import brain.utils.toCm
+import network.databases.DatabaseInitializer
 import runtime.setup.Injector
 import kotlin.math.abs
 
@@ -30,6 +32,7 @@ lateinit var pi4j: Context
 lateinit var console: Console
 lateinit var configuration: Configuration
 lateinit var avatar: Avatar
+lateinit var brain: Brain
 var city = "Toronto"
 
 suspend fun main() {
@@ -54,8 +57,11 @@ suspend fun main() {
                 weatherNetworkService.getWeatherByName(city)
                 if (!(avatar.body as CircuitBoard).getDistanceMeasuringState()) {
                     (avatar.body as CircuitBoard).startDistanceMeasuring(periodInMillis = 1000)
+                    brain.startTrackDevice(parameterName = Brain.PARAMETER_SENSOR_DISTANCE, devicePosition = null, loggingPeriodInMillis = 5000)
                 } else {
                     (avatar.body as CircuitBoard).stopDistanceMeasuring()
+                    brain.stopTrackDevice(Brain.PARAMETER_SENSOR_DISTANCE)
+                    brain.readFromMemory(DatabaseInitializer.DB_TABLE_NAME_DISTANCE_SENSORS, null)
                 }
 
             }
@@ -66,8 +72,9 @@ suspend fun main() {
 fun init() {
     pi4j = Injector.getPi4j()
     console = Injector.getPi4jConsole()
-    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson11-i2c-display.json")
+    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson12-firebase-db.json")
     avatar = AvatarBuilder(pi4j, configuration).build()
+    brain = BrainBuilder(avatar = avatar).build()
 }
 
 fun collectData() {

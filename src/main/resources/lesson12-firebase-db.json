@@ -1,5 +1,5 @@
 {
-  "configName": "lesson11-i2c-display",
+  "configName": "lesson12-firebase-db",
   "configDescription": "This is a configuration to plug in a I2C LED display",
   "configVersion": "1.0.0",
   "hardwareType": "circuitboard",

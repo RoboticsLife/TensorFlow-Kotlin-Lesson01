@@ -7,8 +7,8 @@ import avatar.hardware.parts.basecomponents.Servo
 import avatar.hardware.types.circuitboard.data.BodyCircuitBoard
 import com.pi4j.context.Context
 import kotlinx.coroutines.*
-import brain.data.Configuration
-import brain.data.Distance
+import brain.data.local.Configuration
+import brain.data.local.Distance
 import brain.emitters.DistanceEmitters
 import runtime.setup.Settings.CONNECTION_TYPE_I2C
 import java.util.concurrent.TimeUnit

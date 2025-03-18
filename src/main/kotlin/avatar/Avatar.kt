@@ -5,14 +5,15 @@ import avatar.hardware.HardwareTypes
 import avatar.hardware.types.circuitboard.CircuitBoardImpl
 import avatar.hardware.types.wheelsrobot.WheelsRobotImpl
 import com.pi4j.context.Context
-import brain.data.Configuration
+import brain.data.local.Configuration
 
 /** main class to interact with hardware devices */
 class Avatar {
 
     //res
     private lateinit var pi4J: Context
-    private var configuration: Configuration? = null
+    var configuration: Configuration? = null
+        private set
     //hardware providers
     lateinit var body: Body
     lateinit var type: HardwareTypes.Type

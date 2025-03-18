@@ -1,6 +1,6 @@
 package runtime.setup
 
-import brain.data.Configuration
+import brain.data.local.Configuration
 
 interface RuntimeConfigurationWorker {
 

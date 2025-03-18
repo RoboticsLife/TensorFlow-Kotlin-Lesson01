@@ -2,7 +2,7 @@ package avatar.hardware
 
 import avatar.Avatar
 import com.pi4j.context.Context
-import brain.data.Configuration
+import brain.data.local.Configuration
 
 class AvatarBuilder(private val pi4j: Context, private val configuration: Configuration) {
 

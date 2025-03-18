@@ -2,7 +2,7 @@ package avatar.hardware.parts
 
 import com.pi4j.context.Context
 import com.pi4j.io.gpio.digital.*
-import brain.data.Configuration
+import brain.data.local.Configuration
 
 class Button(pi4j: Context, buttonConfig: Configuration.ButtonConfig) {
 
