@@ -1,6 +1,7 @@
 package avatar.hardware.types.circuitboard
 
 import avatar.hardware.Body
+import brain.data.local.Position
 
 interface CircuitBoard: Body {
 
@@ -29,5 +30,15 @@ interface CircuitBoard: Body {
     fun actuatorServoGetAngleRangeLimit(servoPosition: Int = 0): Float
 
     fun actuatorServoMoveToAngle(servoPosition: Int = 0, angle: Float = 0f, customMovingTimeInMillis: Int? = 0): Boolean
+
+    fun startPositionMeasuring(sensorPosition: Int = 0, periodInMillis: Long = 100): Boolean
+
+    fun stopPositionMeasuring(sensorPosition: Int = 0): Boolean
+
+    fun getPositionData(sensorPosition: Int = 0): Position?
+
+    fun getGyroscopePositionData(sensorPosition: Int = 0): Position?
+
+    fun getGPSPositionData(sensorPosition: Int = 0): Position?
 
 }

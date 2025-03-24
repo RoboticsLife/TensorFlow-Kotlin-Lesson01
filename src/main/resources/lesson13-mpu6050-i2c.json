@@ -46,5 +46,16 @@
       "resolutionRows": 2,
       "resolutionColumns": 16
     }
+  ],
+  "positionSensors": [
+    {
+      "name": "MPU6050 connected to I2C bus",
+      "hardwareModel": "MPU6050",
+      "hardwareVersion": "i2c",
+      "connectionType": "i2c",
+      "pinSDA": 1,
+      "pinSCL": 2,
+      "addressHexAsString": "0x68"
+    }
   ]
 }

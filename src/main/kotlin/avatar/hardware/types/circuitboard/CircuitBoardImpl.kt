@@ -3,12 +3,14 @@ package avatar.hardware.types.circuitboard
 import avatar.hardware.parts.*
 import avatar.hardware.parts.basecomponents.Display
 import avatar.hardware.parts.basecomponents.DistanceSensor
+import avatar.hardware.parts.basecomponents.PositionSensor
 import avatar.hardware.parts.basecomponents.Servo
 import avatar.hardware.types.circuitboard.data.BodyCircuitBoard
 import com.pi4j.context.Context
 import kotlinx.coroutines.*
 import brain.data.local.Configuration
 import brain.data.local.Distance
+import brain.data.local.Position
 import brain.emitters.DistanceEmitters
 import runtime.setup.Settings.CONNECTION_TYPE_I2C
 import java.util.concurrent.TimeUnit
@@ -76,6 +78,16 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
                 when (Servo.isConfigurationValid(it)) {
                     Servo.NAME_HARDWARE_MODEL_SG90 ->
                         body.servos.add(ServoSG90(pi4J, it))
+                }
+            }
+        }
+
+        /** init Position Sensors */
+        configuration.positionSensors?.forEach {
+            if (it?.hardwareModel != null) {
+                when (PositionSensor.isConfigurationValid(it)) {
+                    PositionSensor.NAME_HARDWARE_MODEL_MPU6050 ->
+                        body.positionSensors.add(MPU6050(pi4J, it))
                 }
             }
         }
@@ -228,6 +240,43 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
             return  body.servos[servoPosition].actuatorServoMoveToAngle(angle, customMovingTimeInMillis)
         }
         return false
+    }
+
+    override fun startPositionMeasuring(sensorPosition: Int, periodInMillis: Long): Boolean {
+        //TODO("Not yet implemented")
+        return false
+    }
+
+    override fun stopPositionMeasuring(sensorPosition: Int): Boolean {
+        //TODO("Not yet implemented")
+        return false
+    }
+
+    override fun getPositionData(sensorPosition: Int): Position? {
+        if (sensorPosition < 0) return null
+
+        if (sensorPosition < body.positionSensors.size) {
+            return body.positionSensors[sensorPosition].getPositionData()
+        }
+        return null
+    }
+
+    override fun getGyroscopePositionData(sensorPosition: Int): Position? {
+        if (sensorPosition < 0) return null
+
+        if (sensorPosition < body.positionSensors.size) {
+            return body.positionSensors[sensorPosition].getGyroscopePositionData()
+        }
+        return null
+    }
+
+    override fun getGPSPositionData(sensorPosition: Int): Position? {
+        if (sensorPosition < 0) return null
+
+        if (sensorPosition < body.positionSensors.size) {
+            return body.positionSensors[sensorPosition].getGPSPositionData()
+        }
+        return null
     }
 
     override fun getBatteryStatus(): Int {

@@ -17,6 +17,7 @@ data class Configuration(
     val distanceSensors: List<DistanceSensorConfig?>? = null,
     val displays: List<DisplayConfig?>? = null,
     val servos: List<ServoConfig?>? = null,
+    val positionSensors: List<PositionSensorConfig?>? = null,
 ) {
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class ButtonConfig(
@@ -80,5 +81,16 @@ data class Configuration(
         val hardwareVersion: String?,
         val pin: Int?,
         val installedServoPosition: Int?
+    )
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class PositionSensorConfig(
+        val name: String?,
+        val hardwareModel: String?,
+        val hardwareVersion: String?,
+        val connectionType: String?,
+        val pinSDA: Int?,
+        val pinSCL: Int?,
+        val addressHexAsString: String?,
     )
 }

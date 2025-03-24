@@ -50,6 +50,11 @@ suspend fun main() {
 
         (avatar.body as CircuitBoard).displayPrint(string = "Press the button to get weather forecast")
 
+
+        //TODO tests
+        val position = (avatar.body as CircuitBoard).getPositionData(0)
+        println(position)
+
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,
             actionHigh = {},
@@ -72,7 +77,7 @@ suspend fun main() {
 fun init() {
     pi4j = Injector.getPi4j()
     console = Injector.getPi4jConsole()
-    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson12-firebase-db.json")
+    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson13-mpu6050-i2c.json")
     avatar = AvatarBuilder(pi4j, configuration).build()
     brain = BrainBuilder(avatar = avatar).build()
 }
