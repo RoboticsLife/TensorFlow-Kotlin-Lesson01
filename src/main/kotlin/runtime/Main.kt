@@ -35,7 +35,7 @@ lateinit var avatar: Avatar
 lateinit var brain: Brain
 var city = "Toronto"
 
-suspend fun main() {
+fun main(args: Array<String>) {
 
     init()
     collectData()
