@@ -16,7 +16,7 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
     }
 
     override fun reset() {
-        //TODO("Not yet implemented")
+        calibrateSensor()
     }
 
     override fun getPositionData(): Position {
@@ -32,5 +32,9 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
     override fun getGPSPositionData(): Position {
         TODO("Not yet implemented")
         return Position(0, "MPU6050", "BBOON")
+    }
+
+    private fun calibrateSensor() {
+        //TODO
     }
 }
