@@ -6,7 +6,7 @@ object Settings {
     const val DISTANCE_SENSOR_HC_SR04_DIVIDER_TO_INCH = 148F
     const val DISTANCE_SENSOR_HC_SR04_MAX_LIMIT_CM = 400F
     const val DISTANCE_SENSOR_HC_SR04_MAX_LIMIT_INCH = 158F
-    const val DEFAULT_SDA_PIN = 2
-    const val DEFAULT_SCL_PIN = 3
+    const val DEFAULT_SDA_PIN = 1
+    const val DEFAULT_SCL_PIN = 2
     const val CONNECTION_TYPE_I2C = "i2c"
 }
