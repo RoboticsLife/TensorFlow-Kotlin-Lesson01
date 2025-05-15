@@ -55,7 +55,9 @@
       "connectionType": "i2c",
       "pinSDA": 1,
       "pinSCL": 2,
-      "addressHexAsString": "0x68"
+      "addressHexAsString": "0x68",
+      "dlpfCfg": 0,
+      "smplrtDiv": 0
     }
   ]
 }

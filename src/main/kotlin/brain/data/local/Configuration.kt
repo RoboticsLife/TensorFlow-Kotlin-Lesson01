@@ -92,5 +92,7 @@ data class Configuration(
         val pinSDA: Int?,
         val pinSCL: Int?,
         val addressHexAsString: String?,
+        val dlpfCfg: Int? = null,
+        val smplrtDiv: Int? = null,
     )
 }

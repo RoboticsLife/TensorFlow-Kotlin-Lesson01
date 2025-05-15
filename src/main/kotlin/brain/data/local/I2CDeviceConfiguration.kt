@@ -6,5 +6,6 @@ data class I2CDeviceConfiguration(
     val hardwareVersion: String?,
     val pinSDA: Int,
     val pinSCL: Int,
-    val address: Int
+    val address: Int,
+    val additionalSettings: Any? = null
 )
