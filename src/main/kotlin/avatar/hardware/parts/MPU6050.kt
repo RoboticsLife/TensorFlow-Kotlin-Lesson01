@@ -198,6 +198,22 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
         return Position(0, "MPU6050", "BBOON")
     }
 
+    //TODO only for tests
+    fun outputAllMeasures() {
+        val allAngles = getAccelAngles()
+        val accelAccelerations = getAccelAccelerations()
+        val gyroAngles = getGyroAngles()
+        val gyroAngularSpeeds = getGyroAngularSpeeds()
+        val filteredAngles = getFilteredAngles()
+
+        println("allAngles = $allAngles")
+        println("accelAccelerations = $accelAccelerations")
+        println("gyroAngles = $gyroAngles")
+        println("gyroAngularSpeeds = $gyroAngularSpeeds")
+        println("filteredAngles = $filteredAngles")
+
+    }
+
 
     /** Calibrate the accelerometer and gyroscope sensors. */
     private fun calibrateSensors() {
@@ -291,17 +307,12 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
      * Starts the thread responsible to update MPU6050 values in background.
      */
     fun startUpdatingThread() {
-        if (updatingThread == null || !updatingThread.isAlive()) {
-            updatingThreadStopped = false
+        updatingJob?.cancel()
+        updatingJob = CoroutineScope(Job() + Dispatchers.IO).launch {
             lastUpdateTime = System.currentTimeMillis()
-            updatingThread = Thread(java.lang.Runnable {
-                while (!updatingThreadStopped) {
-                    updateValues()
-                }
-            })
-            updatingThread.start()
-        } else {
-            Tools.debug("Updating thread of the MPU6050 is already started.", Tools.Color.ANSI_RED)
+            updatingThreadStopped = false
+            updateValues()
+            delay(50) //TODO check if it works and set programmatically updating delay
         }
     }
 
@@ -310,16 +321,9 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
      * @throws InterruptedException if any thread has interrupted the current thread.
      * The interrupted status of the current thread is cleared when this exception is thrown.
      */
-    @Throws(InterruptedException::class)
     fun stopUpdatingThread() {
         updatingThreadStopped = true
-        try {
-            updatingThread.join()
-        } catch (e: InterruptedException) {
-            Tools.log("Exception when joining the updating thread.")
-            throw e
-        }
-        updatingThread = null
+        updatingJob?.cancel()
     }
 
 
