@@ -185,6 +185,8 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
 
     override fun getPositionData(): Position {
         //TODO("Not yet implemented")
+        //TODO Alik
+        outputAllMeasures()
         return Position(0, "MPU6050", "BBOON")
     }
 
@@ -206,11 +208,11 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
         val gyroAngularSpeeds = getGyroAngularSpeeds()
         val filteredAngles = getFilteredAngles()
 
-        println("allAngles = $allAngles")
-        println("accelAccelerations = $accelAccelerations")
-        println("gyroAngles = $gyroAngles")
-        println("gyroAngularSpeeds = $gyroAngularSpeeds")
-        println("filteredAngles = $filteredAngles")
+        //println("allAngles = $allAngles")
+        //println("accelAccelerations = $accelAccelerations")
+        //println("gyroAngles = $gyroAngles")
+        println("gyroAngularSpeeds = ${gyroAngularSpeeds?.get(0)}, ${gyroAngularSpeeds?.get(1)}, ${gyroAngularSpeeds?.get(2)},")
+        println("filteredAngles!!!!!!!!!!!! = ${filteredAngles?.get(0)}, ${filteredAngles?.get(1)}, ${filteredAngles?.get(2)}")
 
     }
 
@@ -238,6 +240,9 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
             gyroAngularSpeedOffsetY /= nbReadings.toDouble()
             gyroAngularSpeedOffsetZ /= nbReadings.toDouble()
             println("Calibration ended")
+
+            //TODO tests Alik
+            startUpdatingThread()
         }
     }
 
@@ -309,10 +314,13 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
     fun startUpdatingThread() {
         updatingJob?.cancel()
         updatingJob = CoroutineScope(Job() + Dispatchers.IO).launch {
-            lastUpdateTime = System.currentTimeMillis()
-            updatingThreadStopped = false
-            updateValues()
-            delay(50) //TODO check if it works and set programmatically updating delay
+            while (true) {
+                lastUpdateTime = System.currentTimeMillis()
+                updatingThreadStopped = false
+                updateValues()
+                delay(50) //TODO check if it works and set programmatically updating delay
+            }
+
         }
     }
 

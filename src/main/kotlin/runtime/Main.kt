@@ -52,8 +52,20 @@ fun main(args: Array<String>) {
 
 
         //TODO tests
-        val position = (avatar.body as CircuitBoard).getPositionData(0)
-        println(position)
+
+        val positionSensorJob = CoroutineScope(Job() + Dispatchers.IO).launch {
+            while (true) {
+                delay(1000)
+                val position = (avatar.body as CircuitBoard).getPositionData(0)
+            }
+            //delay(1000)
+            //val position = (avatar.body as CircuitBoard).getPositionData(0)
+            //println(position)
+            //delay(1000)
+            //println((avatar.body as CircuitBoard).getPositionData(0))
+        }
+
+
 
         (avatar.body as CircuitBoard).addButtonListeners(
             buttonPosition = 0,

@@ -110,7 +110,7 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
                     body.leds[ledPosition].off()
                 }
             }
-            this.cancel()
+            body.leds[ledPosition].threadScope?.cancel()
         }
         return true
     }
@@ -146,7 +146,7 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
                     body.buzzers[buzzerPosition].soundOff()
                 }
             }
-            this.cancel()
+            body.buzzers[buzzerPosition].threadScope?.cancel()
         }
         return true
     }
