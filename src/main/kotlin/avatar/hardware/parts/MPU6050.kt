@@ -211,8 +211,10 @@ class MPU6050(pi4j: Context, positionSensorConfig: Configuration.PositionSensorC
         //println("allAngles = $allAngles")
         //println("accelAccelerations = $accelAccelerations")
         //println("gyroAngles = $gyroAngles")
-        println("gyroAngularSpeeds = ${gyroAngularSpeeds?.get(0)}, ${gyroAngularSpeeds?.get(1)}, ${gyroAngularSpeeds?.get(2)},")
-        println("filteredAngles!!!!!!!!!!!! = ${filteredAngles?.get(0)}, ${filteredAngles?.get(1)}, ${filteredAngles?.get(2)}")
+        //println("gyroAngularSpeeds = ${gyroAngularSpeeds?.get(0)?.toInt()}, ${gyroAngularSpeeds?.get(1)?.toInt()}, ${gyroAngularSpeeds?.get(2)?.toInt()},")
+        println("accelAccelerations = ${accelAccelerations?.get(0)?.toInt()}, ${accelAccelerations?.get(1)?.toInt()}, ${accelAccelerations?.get(2)?.toInt()},")
+        //println("filteredAngles!!!!!!!!!!!! = ${filteredAngles?.get(0)?.toInt()}, ${filteredAngles?.get(1)?.toInt()}, ${filteredAngles?.get(2)?.toInt()}")
+        //println("filteredAngles!!!!!!!!!!!! = ${gyroAngles?.get(0)?.toInt()}, ${gyroAngles?.get(1)?.toInt()}, ${gyroAngles?.get(2)?.toInt()}")
 
     }
 

@@ -1,0 +1,22 @@
+{
+  "configName": "lesson12-firebase-db",
+  "configDescription": "This is a configuration to plug in a I2C LED display",
+  "configVersion": "1.0.0",
+  "hardwareType": "circuitboard",
+  "hardwareModel": "i2c",
+  "hardwareTypeCode": 1,
+  "hardwareModelCode": 1,
+  "positionSensors": [
+    {
+      "name": "MPU6050 connected to I2C bus",
+      "hardwareModel": "MPU6050",
+      "hardwareVersion": "i2c",
+      "connectionType": "i2c",
+      "pinSDA": 1,
+      "pinSCL": 2,
+      "addressHexAsString": "0x68",
+      "dlpfCfg": 0,
+      "smplrtDiv": 0
+    }
+  ]
+}

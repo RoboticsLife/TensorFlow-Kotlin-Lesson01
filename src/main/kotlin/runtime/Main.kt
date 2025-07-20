@@ -35,7 +35,7 @@ lateinit var avatar: Avatar
 lateinit var brain: Brain
 var city = "Toronto"
 
-fun main(args: Array<String>) {
+suspend fun main(args: Array<String>) {
 
     init()
     collectData()
@@ -44,14 +44,10 @@ fun main(args: Array<String>) {
     console.println(pi4j.boardInfo().boardModel)
     println(configuration)
 
-    val weatherNetworkService = WeatherNetworkService()
 
     if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
 
-        (avatar.body as CircuitBoard).displayPrint(string = "Press the button to get weather forecast")
-
-
-        //TODO tests
+           //TODO tests
 
         val positionSensorJob = CoroutineScope(Job() + Dispatchers.IO).launch {
             while (true) {
@@ -67,29 +63,20 @@ fun main(args: Array<String>) {
 
 
 
-        (avatar.body as CircuitBoard).addButtonListeners(
-            buttonPosition = 0,
-            actionHigh = {},
-            actionLow = {
-                weatherNetworkService.getWeatherByName(city)
-                if (!(avatar.body as CircuitBoard).getDistanceMeasuringState()) {
-                    (avatar.body as CircuitBoard).startDistanceMeasuring(periodInMillis = 1000)
-                    brain.startTrackDevice(parameterName = Brain.PARAMETER_SENSOR_DISTANCE, devicePosition = null, loggingPeriodInMillis = 5000)
-                } else {
-                    (avatar.body as CircuitBoard).stopDistanceMeasuring()
-                    brain.stopTrackDevice(Brain.PARAMETER_SENSOR_DISTANCE)
-                    brain.readFromMemory(DatabaseInitializer.DB_TABLE_NAME_DISTANCE_SENSORS, null)
-                }
+    }
 
-            }
-        )
+    //add infinite loop for java app running
+    coroutineScope {
+        println("Start infinite main thread")
+        delay(100_000_000L)
+        println("End infinite main thread")
     }
 }
 
 fun init() {
     pi4j = Injector.getPi4j()
     console = Injector.getPi4jConsole()
-    configuration = Injector.getRuntimeConfiguration().getConfiguration("lesson13-mpu6050-i2c.json")
+    configuration = Injector.getRuntimeConfiguration().getConfiguration("base-mpu6050-i2c.json")
     avatar = AvatarBuilder(pi4j, configuration).build()
     brain = BrainBuilder(avatar = avatar).build()
 }
