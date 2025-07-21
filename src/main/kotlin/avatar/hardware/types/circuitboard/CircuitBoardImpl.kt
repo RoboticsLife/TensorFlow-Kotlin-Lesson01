@@ -87,7 +87,8 @@ class CircuitBoardImpl(private val pi4J: Context, private val configuration: Con
             if (it?.hardwareModel != null) {
                 when (PositionSensor.isConfigurationValid(it)) {
                     PositionSensor.NAME_HARDWARE_MODEL_MPU6050 ->
-                        body.positionSensors.add(MPU6050(pi4J, it))
+                        //body.positionSensors.add(MPU6050(pi4J, it))
+                        body.positionSensors.add(MPU6050basic(pi4J, it))
                 }
             }
         }
