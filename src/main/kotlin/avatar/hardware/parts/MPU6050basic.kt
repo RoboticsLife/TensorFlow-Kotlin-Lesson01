@@ -17,6 +17,13 @@ class MPU6050basic(pi4j: Context, positionSensorConfig: Configuration.PositionSe
 ) {
 
 
+    //Calculated offset for the angular speed from the gyroscope, for the X axis.
+    private var gyroAngularSpeedOffsetX: Double = 0.0
+    //Calculated offset for the angular speed from the gyroscope, for the Y axis.
+    private var gyroAngularSpeedOffsetY: Double = 0.0
+    //Calculated offset for the angular speed from the gyroscope, for the Z axis.
+    private var gyroAngularSpeedOffsetZ: Double = 0.0
+
 
     lateinit var mpu6050: I2C
 
@@ -28,6 +35,9 @@ class MPU6050basic(pi4j: Context, positionSensorConfig: Configuration.PositionSe
 
         mpu6050 = i2C
 
+
+        calibrateSensors()
+
     }
 
     override fun reset() {
@@ -37,22 +47,27 @@ class MPU6050basic(pi4j: Context, positionSensorConfig: Configuration.PositionSe
     override fun getPositionData(): Position? {
 
         // 2. Read raw data
-        val accelX = mpu6050.readRegisterWord(MPU6050_REG_ADDR_ACCEL_XOUT_H)
-        val accelY = mpu6050.readRegisterWord(MPU6050_REG_ADDR_ACCEL_XOUT_H + 2)
-        val accelZ = mpu6050.readRegisterWord(MPU6050_REG_ADDR_ACCEL_XOUT_H + 4)
+        val accelX = mpu6050.readRegisterWord(MPU6050_REG_ADDR_ACCEL_XOUT_H).toDouble()
+        val accelY = mpu6050.readRegisterWord(MPU6050_REG_ADDR_ACCEL_XOUT_H + 2).toDouble()
+        val accelZ = mpu6050.readRegisterWord(MPU6050_REG_ADDR_ACCEL_XOUT_H + 4).toDouble()
 
-        val gyroX = mpu6050.readRegisterWord(MPU6050_REG_ADDR_GYRO_XOUT_H)
-        val gyroY = mpu6050.readRegisterWord(MPU6050_REG_ADDR_GYRO_XOUT_H + 2)
-        val gyroZ = mpu6050.readRegisterWord(MPU6050_REG_ADDR_GYRO_XOUT_H + 4)
+        val gyroX = mpu6050.readRegisterWord(MPU6050_REG_ADDR_GYRO_XOUT_H).toDouble()
+        val gyroY = mpu6050.readRegisterWord(MPU6050_REG_ADDR_GYRO_XOUT_H + 2).toDouble()
+        val gyroZ = mpu6050.readRegisterWord(MPU6050_REG_ADDR_GYRO_XOUT_H + 4).toDouble()
 
         // 3. Calculate real-world values
         val accelX_g = accelX / ACCEL_SCALE_FACTOR
         val accelY_g = accelY / ACCEL_SCALE_FACTOR
         val accelZ_g = accelZ / ACCEL_SCALE_FACTOR
 
-        val gyroX_dps = gyroX / GYRO_SCALE_FACTOR
-        val gyroY_dps = gyroY / GYRO_SCALE_FACTOR
-        val gyroZ_dps = gyroZ / GYRO_SCALE_FACTOR
+        var gyroX_dps = gyroX / GYRO_SCALE_FACTOR
+        var gyroY_dps = gyroY / GYRO_SCALE_FACTOR
+        var gyroZ_dps = gyroZ / GYRO_SCALE_FACTOR
+
+        //TODO tets
+      //  gyroX_dps = gyroX_dps - gyroAngularSpeedOffsetX
+      //  gyroY_dps = gyroY_dps - gyroAngularSpeedOffsetY
+      //  gyroZ_dps = gyroZ_dps - gyroAngularSpeedOffsetZ
 
         // 4. Calculate Pitch and Roll from Accelerometer data
         val pitch = Math.toDegrees(atan2(-accelX_g, sqrt(accelY_g.pow(2) + accelZ_g.pow(2))))
@@ -79,6 +94,31 @@ class MPU6050basic(pi4j: Context, positionSensorConfig: Configuration.PositionSe
 
     override fun getGPSPositionData(): Position? {
         return Position(0, "MPU6050", "BBOON")
+    }
+
+    private fun calibrateSensors() {
+        val calibrateThread = CoroutineScope(Job() + Dispatchers.IO).launch {
+            println("Calibration starting in 5 seconds (don't move the sensor).")
+            delay(5000)
+            println("Calibration started (~5s) (don't move the sensor).")
+
+            val nbReadings = 50
+            // Gyroscope offsets
+            gyroAngularSpeedOffsetX = 0.0
+            gyroAngularSpeedOffsetY = 0.0
+            gyroAngularSpeedOffsetZ = 0.0
+            for (i in 0..<nbReadings) {
+
+                gyroAngularSpeedOffsetX += mpu6050.readRegisterWord(MPU6050_REG_ADDR_GYRO_XOUT_H).toDouble()
+                gyroAngularSpeedOffsetY += mpu6050.readRegisterWord(MPU6050_REG_ADDR_GYRO_XOUT_H + 2).toDouble()
+                gyroAngularSpeedOffsetZ += mpu6050.readRegisterWord(MPU6050_REG_ADDR_GYRO_XOUT_H + 4).toDouble()
+                delay(100)
+            }
+            gyroAngularSpeedOffsetX /= nbReadings.toDouble()
+            gyroAngularSpeedOffsetY /= nbReadings.toDouble()
+            gyroAngularSpeedOffsetZ /= nbReadings.toDouble()
+            println("Calibration ended")
+        }
     }
 
 

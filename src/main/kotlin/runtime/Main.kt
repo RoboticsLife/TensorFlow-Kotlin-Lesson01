@@ -35,6 +35,8 @@ lateinit var avatar: Avatar
 lateinit var brain: Brain
 var city = "Toronto"
 
+var calibrationState = false
+
 suspend fun main(args: Array<String>) {
 
     init()
@@ -47,12 +49,20 @@ suspend fun main(args: Array<String>) {
 
     if (avatar.type == HardwareTypes.Type.CIRCUIT_BOARD) {
 
+
+       // sensor.calibrate(5000)
+
            //TODO tests
 
         val positionSensorJob = CoroutineScope(Job() + Dispatchers.IO).launch {
             while (true) {
                 delay(1000)
                 val position = (avatar.body as CircuitBoard).getPositionData(0)
+          //      console.println("Pitch: %.2f°, Roll: %.2f°, Temp: %.2f°C%n",
+           //         sensor.getPitch(),
+             //       sensor.getRoll(),
+               //     sensor.getTemperatureCelsius());
+
             }
             //delay(1000)
             //val position = (avatar.body as CircuitBoard).getPositionData(0)
