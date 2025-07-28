@@ -245,6 +245,14 @@
         </dependency>
 
 
+        <!-- TensorFlow -->
+        <dependency>
+            <groupId>org.tensorflow</groupId>
+            <artifactId>tensorflow-core-platform</artifactId>
+            <version>0.3.3</version>
+        </dependency>
+
+
 
     </dependencies>
 
